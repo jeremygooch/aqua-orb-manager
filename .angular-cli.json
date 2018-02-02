@@ -19,6 +19,7 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
+          "../node_modules/onsenui/css/onsenui.css",
         "styles.css"
       ],
       "scripts": [],
