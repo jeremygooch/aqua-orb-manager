@@ -33,4 +33,9 @@ export class DevicesComponent implements OnInit {
             alert('no devices. redirect to discover screen....');
         }
     }
+
+    // showDefaultImage(dev): boolean {
+    //     console.dir(dev);
+    //     return dev.imgPath === '' ? true : false;
+    // }
 }

@@ -1,7 +1,8 @@
 <div *ngIf="device">
 
     <h2>{{ device.name | uppercase }} Details</h2>
-    <div><span>id: </span>{{device.id}}</div>
+    <img *ngIf="device.imgPath==''" src="assets/aqua-orb-icon.png" class="placeholder">
+    <div><span>Bluetooth Address: </span>{{device.id}}</div>
     <div>
         <label>name:
             <input [(ngModel)]="device.name" placeholder="name"/>

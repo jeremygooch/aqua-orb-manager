@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Device } from './device';
-import { DEVICES } from './mock-devices';
 
 
 @Injectable()
@@ -45,14 +44,11 @@ export class DeviceService {
     }
 
     getDevice(id): { id: string, name: string, imgPath: string } {
-        // alert('under construction')
-        console.log('or this find');
         return this.getDevices().find(device => device.id === id);
     }
 
     hasDevice(id): boolean {
         return this.hasDevices() ? !!this.getDevices().find(device => device.id === id) : false;
-        // return this.hasDevices() ?  : false;
     }
 
 }

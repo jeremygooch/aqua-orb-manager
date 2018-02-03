@@ -1,10 +1,11 @@
-<h2>My Devices</h2>
+<h2>Aqua Orbs</h2>
 
 <ul class="devices">
     <li *ngFor="let device of devices">
-        <a routerLink="/detail/{{device.id}}">
-            <span class="badge">{{device.name}}</span>
+        <a routerLink="/detail/{{device.id}}" class="orb-image">
+            <img *ngIf="device.imgPath==''" src="assets/aqua-orb-icon.png" class="placeholder">
         </a>
+        <div class="orb-name">{{device.name | titlecase}}</div>
     </li>
 </ul>
 
