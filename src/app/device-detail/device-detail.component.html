@@ -1,7 +1,11 @@
 <div *ngIf="device">
 
     <h2>{{ device.name | uppercase }} Details</h2>
-    <img *ngIf="device.imgPath==''" src="assets/aqua-orb-icon.png" class="placeholder">
+    <div class="device-image">
+        <img *ngIf="device.imgPath==''" src="assets/aqua-orb-icon.png" class="placeholder">
+    </div>
+    <a (click)="openCamera()">Take new picture</a>
+    <a (click)="testc()">Choose picture</a>
     <div><span>Bluetooth Address: </span>{{device.id}}</div>
     <div>
         <label>name:

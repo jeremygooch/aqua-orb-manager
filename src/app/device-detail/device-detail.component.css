@@ -1,6 +1,10 @@
+.device-image {
+    margin-bottom: 1rem;
+    clear: both;
+    width: 100%;
+    text-align: center;
+}
+
 img.placeholder {
     opacity: 0.5;
-    margin: 0 auto 1rem auto;
-    display: block;
-    clear: both;
 }

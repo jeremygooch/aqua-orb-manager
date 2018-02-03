@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 
 declare var bluetoothSerial;
+declare var navigator;
 
 @Component({
     selector: 'app-root',
@@ -19,6 +20,7 @@ export class AppComponent implements OnInit {
 
         function onDeviceReady() {
             this.bluetoothSerial = bluetoothSerial;
+            this.navigator = navigator;
         }
     }
     goBack(): void {
