@@ -38,16 +38,20 @@ testem.log
 /e2e/*.js
 /e2e/*.map
 
-
+# project specific
 package-lock.json
+platforms/
+plugins/
+res/
+yarn-error.log
+yarn.lock
 
 
 
 
 
 
-
-# -*- mode: gitignore; -*-
+# emacs
 *~
 \#*\#
 /.emacs.desktop

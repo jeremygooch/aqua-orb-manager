@@ -13,6 +13,7 @@ import { DevicesComponent } from './devices/devices.component';
 import { DeviceDetailComponent } from './device-detail/device-detail.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { WelcomeComponent } from './welcome/welcome.component';
+import { DiscoverComponent } from './discover/discover.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { WelcomeComponent } from './welcome/welcome.component';
         AppComponent,
         DevicesComponent,
         DeviceDetailComponent,
-        WelcomeComponent
+        WelcomeComponent,
+        DiscoverComponent
     ],
     imports: [
         BrowserModule,

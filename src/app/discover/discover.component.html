@@ -1,0 +1,11 @@
+<h2>Please Pick A Device To Connect To</h2>
+
+<ul class="found-devices">
+    <li *ngFor="let foundDevice of foundDevices">
+        <a [class.connecting]="foundDevice.address === connectingDevice"
+           (click)="connectTo(foundDevice.address)" >
+            <span class="badge">{{foundDevice.name}}</span>
+        </a><small>{{foundDevice.address}}</small>
+    </li>
+</ul>
+<div *ngIf="noDevices">Enable your device's bluetooth to continue.</div>

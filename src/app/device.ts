@@ -1,4 +1,5 @@
 export class Device {
-  id: number;
-  name: string;
+    id: string;
+    name: string;
+    imgPath: string;
 }

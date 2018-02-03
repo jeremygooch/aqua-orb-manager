@@ -3,8 +3,16 @@
 <ul class="devices">
     <li *ngFor="let device of devices">
         <a routerLink="/detail/{{device.id}}">
-            <span class="badge">{{device.id}}</span> {{device.name}}
+            <span class="badge">{{device.name}}</span>
         </a>
     </li>
 </ul>
 
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<nav>
+    <a routerLink="/discover">+ (add plant)</a>
+</nav>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

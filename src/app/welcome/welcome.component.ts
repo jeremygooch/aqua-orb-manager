@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WelcomeComponent implements OnInit {
 
-  constructor() { }
+    constructor() {
+    }
 
-  ngOnInit() {
+    ngOnInit() {
+        document.addEventListener("load", onDeviceReady, false);
+
+        function onDeviceReady() {
+        }
+        console.log('DEBUGGING');
   }
 
 }
