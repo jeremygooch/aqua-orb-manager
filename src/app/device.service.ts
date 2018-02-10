@@ -37,8 +37,6 @@ export class DeviceService {
                 });
                 this.db.setItem('devices', JSON.stringify(this.curDevices));
             }
-            // Wipe devices
-            // this.db.removeItem('devices');
             return true;
         }
     }

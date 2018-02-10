@@ -3,6 +3,7 @@
     <h2>{{ device.name | uppercase }} Details</h2>
     <div class="device-image">
         <img *ngIf="device.imgPath==''" src="assets/aqua-orb-icon.png" class="placeholder">
+        <img *ngIf="device.imgPath!=''" src="{{ device.imgPath }}">
     </div>
     <a (click)="openCamera()">Take new picture</a>
     <a (click)="testc()">Choose picture</a>
@@ -12,5 +13,27 @@
             <input [(ngModel)]="device.name" placeholder="name"/>
         </label>
     </div>
+
+    <h3>Watering Information</h3>
+    <form>
+        <fieldset>
+            <legend>Watering Info:</legend>
+            Water Every: <input type="range" min="1" max="60" value="5" class="slider" id="waterFreq"><span>val here.</span>
+            <select name="waterFreqUnit">
+                <option value="weeks">Weeks</option>
+                <option value="days">Days</option>
+                <option selected="true" value="hours">Hours</option>
+                <option value="minutes">Minutes</option>
+            </select><br />
+            Leave valve open for: <input type="range" min="1" max="60" value="5" class="slider" id="openTime">
+            <select name="openTimeUnit">
+                <option selected="true" value="seconds">Seconds</option>
+                <option value="minutes">Minutes</option>
+            </select><br />
+            Open Angle: <input type="range" min="0" max="99" value="5" class="slider" id="openAngle"><br />
+            Closed Angle: <input type="range" min="100" max="180" value="5" class="slider" id="closedAngle"><br />
+        </fieldset>
+    </form>
     <button (click)="goBack()">go back</button>
+    <button (click)="save()">Save Settings</button>
 </div>

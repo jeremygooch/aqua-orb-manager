@@ -11,6 +11,14 @@ import { DeviceService } from '../device.service';
 })
 export class DevicesComponent implements OnInit {
 
+    // Wipe devices
+    db = window.localStorage;
+
+
+
+
+
+
     devices: Device[];
 
     constructor(
@@ -20,6 +28,7 @@ export class DevicesComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.db.removeItem('devices');
         if (this.deviceService.hasDevices()) {
             this.getDevices();
         } else {

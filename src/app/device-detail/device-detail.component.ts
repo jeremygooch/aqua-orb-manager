@@ -3,10 +3,12 @@ import { Location } from '@angular/common';
 
 import { DeviceService }  from '../device.service';
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { Device } from '../device';
 
 declare var navigator: any;
+declare var cordova: any;
+declare var window: any;
 
 @Component({
     selector: 'app-device-detail',
@@ -17,8 +19,8 @@ export class DeviceDetailComponent implements OnInit {
 
     @Input() device: Device
 
-
     constructor(
+        private zone: NgZone,
         private route: ActivatedRoute,
         private deviceService: DeviceService,
         private location: Location
@@ -39,41 +41,24 @@ export class DeviceDetailComponent implements OnInit {
         this.location.back();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    test(): void {}
+    updateImage(path): void {
+        this.zone.run(() => {
+            this.device.imgPath = path;
+        });
+    }
 
     openCamera(): void {
 
         var srcType = navigator.camera.PictureSourceType.CAMERA;
         var options = this.setOptions(srcType);
 
-        navigator.camera.getPicture(function cameraSuccess(imageUri) {
-
-            alert(imageUri);
-            // displayImage(imageUri);
-            // // You may choose to copy the picture, save it somewhere, or upload.
-            // func(imageUri);
-
+        navigator.camera.getPicture(imageUri => {
+            this.updateImage(imageUri);
         }, function cameraError(error) {
             console.debug("Unable to obtain picture: " + error, "app");
 
         }, options);
     }
-
-
-
 
     setOptions(srcType): {}{
         return {
@@ -85,10 +70,15 @@ export class DeviceDetailComponent implements OnInit {
             encodingType: navigator.camera.EncodingType.JPEG,
             mediaType: navigator.camera.MediaType.PICTURE,
             allowEdit: true,
-            correctOrientation: true  //Corrects Android orientation quirks
+            correctOrientation: true,  //Corrects Android orientation quirks
+            targetHeight: 200,
+            targetWidth: 200
         }
     }
 
-
+    save():void {
+        console.log('save to storage and update bluetooth...');
+        // Use this: bluetoothSerial.setName to change the device name
+    }
 }
 
