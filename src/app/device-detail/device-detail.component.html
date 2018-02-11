@@ -1,6 +1,7 @@
 <div *ngIf="device">
 
     <h2>{{ device.name | uppercase }} Details</h2>
+    <h3 *ngIf="noConnection">Could not connect to device</h3>
     <div class="device-image">
         <img *ngIf="device.imgPath==''" src="assets/aqua-orb-icon.png" class="placeholder">
         <img *ngIf="device.imgPath!=''" src="{{ device.imgPath }}">

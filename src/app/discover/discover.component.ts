@@ -2,6 +2,8 @@ import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { DeviceService } from '../device.service';
+import { DevicesComponent } from '../devices/devices.component';
+import { DiscoverService } from '../discover.service';
 import TextEncoding from 'text-encoding';
 
 declare var bluetoothSerial: any;
@@ -12,19 +14,48 @@ declare var bluetoothSerial: any;
     styleUrls: ['./discover.component.css']
 })
 export class DiscoverComponent implements OnInit {
+    // Wipe devices
+    db = window.localStorage;
+
 
     foundDevices;
     noDevices;
     connectingDevice;
+    savedDev;
+
+    debugging;
 
     constructor(
         private zone: NgZone,
+        private discoverService: DiscoverService,
         private deviceService: DeviceService,
         private router: Router
     ) { }
 
     ngOnInit() {
-        bluetoothSerial.isEnabled(this.listDevices.bind(this), this.bluetoothDisabled.bind(this));
+        this.db.removeItem('devices');
+        if (this.discoverService.setup()) {
+            //TODO: Build out services for bluetooth connection
+            if (typeof bluetoothSerial === 'undefined') { this.debugging = true; }
+        } else {
+            console.log('turning on disabled bt message here...');
+            this.bluetoothDisabled();
+        }
+
+
+        if (!this.debugging) bluetoothSerial.isEnabled(this.listDevices.bind(this), this.bluetoothDisabled.bind(this));
+        else this.mockDevices();
+    }
+
+    mockDevices():void {
+        this.foundDevices = [
+            {name: "HC-05",               address: "01:01", id: "02:02", class: 7936},
+            {name: "TOYOTA Corolla",      address: "03:03", id: "03:03", class: 1032},
+            {name: "myplant01",           address: "04:04", id: "04:04", class: 7936},
+            {name: "Daydream controller", address: "05:05", id: "05:05", class: 7936},
+            {name: "HMDX Neutron",        address: "06:06", id: "07:07", class: 1028},
+            {name: "abiding-aardvark",    address: "08:08", id: "09:09", class: 7936}
+        ];
     }
 
     listDevices():void {
@@ -37,8 +68,24 @@ export class DiscoverComponent implements OnInit {
         this.noDevices = true;
     }
 
-    connectTo(addr):void {
-        // API:
+    connectTo(addr: string): void {
+        if (!this.debugging) this.connectToBT(addr);
+        else this.connectToMock(addr);
+    }
+
+    connectToMock(addr: string): void {
+        window.setTimeout(() => {
+            this.saveDevice(addr);
+            this.goToDevices();
+        }, 3000);
+    }
+
+    saveDevice(addr: string) {
+        this.deviceService.saveDevice(this.foundDevices.find(device => device.address === addr));
+    }
+
+    connectToBT(addr: string):void {
+        // Device mapping:
         // n: name
         // f: frequency / time closed
         // t: time open
@@ -46,20 +93,21 @@ export class DiscoverComponent implements OnInit {
         // c: servo closed value
         this.connectingDevice = addr;
         bluetoothSerial.connect(addr, () => {
-            console.log('Established connection. Sending Status Query.');
+            this.saveDevice(addr);
             bluetoothSerial.write("[qn]", e => {
 
-                bluetoothSerial.subscribe(']', function (data) {
-                    console.log('received regular message');
-                    console.log(data);
+                bluetoothSerial.subscribe(']', (data) => {
+                    // Need to update the device in the database....
+                    this.savedDev = this.foundDevices.find(device => device.address === addr);
+                    this.savedDev.name = data.replace(/\[|\]/g, '');
 
-                    console.log('reg msg length: ' + data.length);
-                    console.log('reg msg type: ' + typeof data);
+                    this.deviceService.updateDevice(this.savedDev);
+                    this.goToDevices();
 
                 },function(e){console.log(e);});
 
 
-                bluetoothSerial.subscribeRawData(function (data) {
+                bluetoothSerial.subscribeRawData((data) => {
                 }, function(error) {
                     console.log('error');
                     console.log(error);
@@ -69,19 +117,16 @@ export class DiscoverComponent implements OnInit {
                 console.log('write fail cb ');
                 console.log(e);
             });
-
-
-
-
-            // this.deviceService.saveDevice(this.foundDevices.find(device => device.address === addr));
-
-            // Hack for running ng in cordova which causes onInit to not fire by default
-            // this.zone.run(() => {
-            //     this.router.navigate(['/devices']);
-            // });
         }, (e) => {
             console.log('do\'h');
             console.dir(e);
+        });
+    }
+
+    goToDevices(): void {
+        // Hack for running ng in cordova which causes onInit to not fire by default
+        this.zone.run(() => {
+            this.router.navigate(['/devices']);
         });
     }
 

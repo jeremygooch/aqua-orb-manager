@@ -5,10 +5,12 @@ import { DeviceService }  from '../device.service';
 
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { Device } from '../device';
+import { DiscoverService } from '../discover.service';
 
 declare var navigator: any;
 declare var cordova: any;
 declare var window: any;
+
 
 @Component({
     selector: 'app-device-detail',
@@ -17,22 +19,34 @@ declare var window: any;
 })
 export class DeviceDetailComponent implements OnInit {
 
-    @Input() device: Device
+    @Input() device: Device;
+
+    private noConnection;
 
     constructor(
         private zone: NgZone,
         private route: ActivatedRoute,
+        private discoverService: DiscoverService,
         private deviceService: DeviceService,
         private location: Location
     ) {}
 
     ngOnInit(): void {
-        console.log('oninitting...');
         console.dir(navigator.camera);
-        this.getDevice();
+
+        this.getDeviceDefault();
+        if (!this.discoverService.setupNew()) {
+            this.noConnection = true;
+        } else {
+            this.queryDevice();
+        }
     }
 
-    getDevice(): void {
+    queryDevice(): void {
+        // query each parameter of the device one at a time?????
+    }
+
+    getDeviceDefault(): void {
         const id = this.route.snapshot.paramMap.get('id');
         this.device = this.deviceService.getDevice(id);
     }

@@ -11,14 +11,6 @@ import { DeviceService } from '../device.service';
 })
 export class DevicesComponent implements OnInit {
 
-    // Wipe devices
-    db = window.localStorage;
-
-
-
-
-
-
     devices: Device[];
 
     constructor(
@@ -28,7 +20,6 @@ export class DevicesComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.db.removeItem('devices');
         if (this.deviceService.hasDevices()) {
             this.getDevices();
         } else {
@@ -42,6 +33,8 @@ export class DevicesComponent implements OnInit {
             alert('no devices. redirect to discover screen....');
         }
     }
+
+
 
     // showDefaultImage(dev): boolean {
     //     console.dir(dev);

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Device } from './device';
 
 
+
 @Injectable()
 export class DeviceService {
     db = window.localStorage;
@@ -38,6 +39,23 @@ export class DeviceService {
                 this.db.setItem('devices', JSON.stringify(this.curDevices));
             }
             return true;
+        }
+    }
+
+    updateDevice(dev):boolean {
+        if (!dev) {
+            console.log('no device to save');
+            return false;
+        } else {
+            if (!this.hasDevices()) {
+                console.log('The database is empty');
+                return false;
+            }
+            this.curDevices = this.getDevices();
+            for (let i = 0; i<this.curDevices.length; i++) {
+                if (this.curDevices[i].id === dev.id) { this.curDevices[i] = dev; }
+            }
+            this.db.setItem('devices', JSON.stringify(this.curDevices));
         }
     }
 

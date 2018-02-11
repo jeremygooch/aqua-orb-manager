@@ -5,7 +5,7 @@
         <a routerLink="/detail/{{device.id}}" class="orb-image">
             <img *ngIf="device.imgPath==''" src="assets/aqua-orb-icon.png" class="placeholder">
         </a>
-        <div class="orb-name">{{device.name | titlecase}}</div>
+        <div class="orb-name">{{device.name}}</div>
     </li>
 </ul>
 

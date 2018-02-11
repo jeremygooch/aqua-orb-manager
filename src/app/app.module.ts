@@ -5,10 +5,11 @@ import { NgModule } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { DeviceService } from './device.service';
+import { DiscoverService } from './discover.service';
 import { DevicesComponent } from './devices/devices.component';
 import { DeviceDetailComponent } from './device-detail/device-detail.component';
 import { AppRoutingModule } from './/app-routing.module';
@@ -26,6 +27,7 @@ import { DiscoverComponent } from './discover/discover.component';
     ],
     imports: [
         BrowserModule,
+        HttpClientModule,
         // OnsenModule,
         FormsModule,
         AppRoutingModule,
@@ -33,7 +35,7 @@ import { DiscoverComponent } from './discover/discover.component';
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA
     ],
-    providers: [ DeviceService ],
+    providers: [ DeviceService, DiscoverService ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
