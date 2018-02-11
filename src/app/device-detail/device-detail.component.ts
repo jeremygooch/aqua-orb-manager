@@ -48,7 +48,7 @@ export class DeviceDetailComponent implements OnInit {
 
     getDeviceDefault(): void {
         const id = this.route.snapshot.paramMap.get('id');
-        this.device = this.deviceService.getDevice(id);
+        this.device = this.deviceService.getDevice(id);;
     }
 
     goBack(): void {

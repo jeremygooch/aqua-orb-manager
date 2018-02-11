@@ -15,7 +15,14 @@ export class DeviceService {
     }
 
     getDevices(): Device[] {
-        return JSON.parse(this.db.getItem('devices'));
+        const out = JSON.parse(this.db.getItem('devices'));
+        if (out) {
+            out.frequency = out.frequency || 0;
+            out.timeOpen = out.timeOpen || 0;
+            out.servoOpen = out.servoOpen || 0;
+            out.servoClose = out.servoClose || 0;
+        }
+        return out;
     }
 
     saveDevice(dev):boolean {
@@ -27,14 +34,22 @@ export class DeviceService {
                 this.db.setItem('devices', JSON.stringify([{
                     id: dev.address,
                     name: dev.name,
-                    imgPath: ''
+                    imgPath: '',
+                    frequency: 0,
+                    timeOpen: 0,
+                    servoOpen: 0,
+                    servoClose: 0
                 }]));
             } else {
                 this.curDevices = this.getDevices();
                 this.curDevices.push({
                     id: dev.address,
                     name: dev.name,
-                    imgPath: ''
+                    imgPath: '',
+                    frequency: 0,
+                    timeOpen: 0,
+                    servoOpen: 0,
+                    servoClose: 0
                 });
                 this.db.setItem('devices', JSON.stringify(this.curDevices));
             }
@@ -59,8 +74,8 @@ export class DeviceService {
         }
     }
 
-    getDevice(id): { id: string, name: string, imgPath: string } {
-        return this.getDevices().find(device => device.id === id);
+    getDevice(id): { id: string, name: string, imgPath: string, frequency: number, timeOpen: number, servoOpen: number, servoClose: number } {
+        return this.getDevices().find(dev => dev.id === id);
     }
 
     hasDevice(id): boolean {

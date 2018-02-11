@@ -100,6 +100,10 @@ export class DiscoverComponent implements OnInit {
                     // Need to update the device in the database....
                     this.savedDev = this.foundDevices.find(device => device.address === addr);
                     this.savedDev.name = data.replace(/\[|\]/g, '');
+                    this.savedDev.frequency  = this.savedDev.frequency  || 0;
+                    this.savedDev.timeOpen   = this.savedDev.timeOpen   || 0;
+                    this.savedDev.servoOpen  = this.savedDev.servoOpen  || 0;
+                    this.savedDev.servoClose = this.savedDev.servoClose || 0;
 
                     this.deviceService.updateDevice(this.savedDev);
                     this.goToDevices();
