@@ -31,8 +31,8 @@
                 <option selected="true" value="seconds">Seconds</option>
                 <option value="minutes">Minutes</option>
             </select><br />
-            Open Angle: <input type="range" min="0" max="99" value="5" class="slider" id="openAngle"><br />
-            Closed Angle: <input type="range" min="100" max="180" value="5" class="slider" id="closedAngle"><br />
+            Open Angle: <input type="range" min="0" max="79" value="{{ device.servoOpen }}" class="slider" id="openAngle"><br />
+            Closed Angle: <input type="range" min="80" max="180" value="{{ device.servoClose }}" class="slider" id="closedAngle"><br />
         </fieldset>
     </form>
     <button (click)="goBack()">go back</button>

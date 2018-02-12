@@ -51,8 +51,10 @@ export class DeviceDetailComponent implements OnInit {
     queryDevice(): void {
         //TODO: Show old info on screen (from db) with content grayed out and loading ux...
         this.discoverService.queryDevice(this.device.id).then(data => {
-            console.log('great success');
-            console.log('i got this back');
+            data.imgPath = this.device.imgPath || "" ; // Image path not stored on device
+            data.id = this.device.id; // ID/address not stored on device
+            this.device = data;
+            console.log('device updated to this:');
             console.dir(data);
         }, () => {
             console.log('sad face');
@@ -85,6 +87,10 @@ export class DeviceDetailComponent implements OnInit {
             console.debug("Unable to obtain picture: " + error, "app");
 
         }, options);
+    }
+
+    choosePic(): void {
+        console.log('TBD...');
     }
 
     setOptions(srcType): {}{
