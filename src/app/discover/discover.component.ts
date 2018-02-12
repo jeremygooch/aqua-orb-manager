@@ -94,12 +94,12 @@ export class DiscoverComponent implements OnInit {
         this.connectingDevice = addr;
         bluetoothSerial.connect(addr, () => {
             this.saveDevice(addr);
-            bluetoothSerial.write("[qn]", e => {
+            bluetoothSerial.write("[qn]", () => {
 
                 bluetoothSerial.subscribe(']', (data) => {
                     // Need to update the device in the database....
                     this.savedDev = this.foundDevices.find(device => device.address === addr);
-                    this.savedDev.name = data.replace(/\[|\]/g, '');
+                    this.savedDev.name = data.replace(/\{|\}/g, '');
                     this.savedDev.frequency  = this.savedDev.frequency  || 0;
                     this.savedDev.timeOpen   = this.savedDev.timeOpen   || 0;
                     this.savedDev.servoOpen  = this.savedDev.servoOpen  || 0;

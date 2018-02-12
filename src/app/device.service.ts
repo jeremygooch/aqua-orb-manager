@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Device } from './device';
 
-
-
 @Injectable()
 export class DeviceService {
     db = window.localStorage;

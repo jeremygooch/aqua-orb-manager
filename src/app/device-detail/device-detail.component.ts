@@ -38,12 +38,25 @@ export class DeviceDetailComponent implements OnInit {
         if (!this.discoverService.setupNew()) {
             this.noConnection = true;
         } else {
-            this.queryDevice();
+            console.dir(this.discoverService.isAvailable);
+            this.discoverService.isAvailable().then(avail => {
+                if (avail)
+                    this.queryDevice();
+                else
+                    console.log('Update the UI to let the user know to turn on their bt');
+            });
         }
     }
 
     queryDevice(): void {
-        // query each parameter of the device one at a time?????
+        //TODO: Show old info on screen (from db) with content grayed out and loading ux...
+        this.discoverService.queryDevice(this.device.id).then(data => {
+            console.log('great success');
+            console.log('i got this back');
+            console.dir(data);
+        }, () => {
+            console.log('sad face');
+        });
     }
 
     getDeviceDefault(): void {
