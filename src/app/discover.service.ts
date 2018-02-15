@@ -108,7 +108,7 @@ export class DiscoverService {
                         name: "My Amazing Plant",
                         frequency: 4150928,
                         // frequency: 3601,
-                        timeOpen: 2,
+                        timeOpen: 128,
                         servoOpen: 0,
                         servoClose: 100
                     });

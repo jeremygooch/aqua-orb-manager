@@ -18,17 +18,17 @@
     </div>
 
     <h3>Watering Information</h3>
-    <form #wateringForm="myForm"  (ngSubmit)="onSubmit()">
+    <form #wateringForm="ngForm"  (ngSubmit)="onSubmit()">
         <fieldset>
             <legend>Watering Info:</legend>
             <p>How often to Water:
-                <select (change)="updateSchedule()" name="howOften" [ngModel]="sched.howOften">
+                <select (change)="updateSchedule(0)" name="howOften" [(ngModel)]="sched.howOften">
                     <option *ngFor="let param of schedOpts.howOften" [value]="param">{{ param  | titlecase }}</option>
                 </select>
             </p>
             <fieldset>
                 <legend>Water Every: </legend>
-                <p>Month<span *ngIf="months != 1">s</span>:
+                <p *ngIf="sched.howOften == 'monthly'">Month<span *ngIf="months != 1">s</span>:
                     <select name="months" [(ngModel)]="sched.months">
                         <option *ngFor="let param of schedOpts.months" [value]="param">{{ param }}</option>
                     </select>
@@ -38,31 +38,42 @@
                         <option *ngFor="let param of schedOpts.weeks" [value]="param">{{ param }}</option>
                     </select>
                 </p>
-                <p>Day<span *ngIf="days != 1">s</span>:
+                <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly' || sched.howOften == 'daily'">Day<span *ngIf="days != 1">s</span>:
                     <select name="days" [(ngModel)]="sched.days">
                         <option *ngFor="let param of schedOpts.days" [value]="param">{{ param }}</option>
                     </select>
                 </p>
-                <p>Hour<span *ngIf="hours != 1">s</span>:
+                <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly' || sched.howOften =='daily' || sched.howOften =='hourly'">Hour<span *ngIf="hours != 1">s</span>:
                     <select name="hours" [(ngModel)]="sched.hours">
                         <option *ngFor="let param of schedOpts.hours" [value]="param">{{ param }}</option>
                     </select>
                 </p>
-                <p>Minute<span *ngIf="minutes != 1">s</span>:
+                <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly' || sched.howOften =='daily' || sched.howOften =='hourly' || sched.howOften =='minutes'">Minute<span *ngIf="minutes != 1">s</span>:
                     <select name="minutes" [(ngModel)]="sched.minutes">
                         <option *ngFor="let param of schedOpts.minutes" [value]="param">{{ param }}</option>
                     </select>
                 </p>
-                <p>Second<span *ngIf="seconds != 1">s</span>:
+                <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly' || sched.howOften =='daily' || sched.howOften =='hourly' || sched.howOften =='minutes' || sched.howOften =='seconds'">Second<span *ngIf="seconds != 1">s</span>:
                     <select name="seconds" [(ngModel)]="sched.seconds">
                         <option *ngFor="let param of schedOpts.seconds" [value]="param">{{ param }}</option>
                     </select>
                 </p>
             </fieldset>
+            <p>Keep Watering For: </p>
+            <fieldset>
+                <p>Minute<span *ngIf="openMinutes != 1">s</span>:
+                    <select name="openMinutes" [(ngModel)]="openSched.minutes">
+                        <!-- <option *ngFor="let param of schedOpts.minutes" [value]="param">{{ param }}</option> -->
+                        <option *ngFor="let param of (schedOpts.minutes ? schedOpts.minutes.slice(0,15): [])" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+                <p>Second<span *ngIf="openSeconds != 1">s</span>:
+                    <select name="openseconds" [(ngModel)]="openSched.seconds">
+                        <option *ngFor="let param of schedOpts.seconds" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+            </fieldset>
 
-            Leave valve open for:
-            <input type="range" min="1" max="15" value="{{ device.timeOpen }}" class="slider" id="openTime">Minutes<br />
-            <input type="range" min="1" max="60" value="{{ device.timeOpen }}" class="slider" id="openTime">Seconds<br />
             Open Angle: <input type="range" min="0" max="79" value="{{ device.servoOpen }}" class="slider" id="openAngle"><br />
             Closed Angle: <input type="range" min="80" max="180" value="{{ device.servoClose }}" class="slider" id="closedAngle"><br />
         </fieldset>

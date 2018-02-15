@@ -2,12 +2,11 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 
-
 import { DeviceService }  from '../device.service';
 
 import { Device } from '../device';
 import { DiscoverService } from '../discover.service';
-import { OpenSchedule } from './open-schedule';
+import { CloseSchedule } from './close-schedule';
 
 declare var navigator: any;
 declare var cordova: any;
@@ -28,12 +27,17 @@ export class DeviceDetailComponent implements OnInit {
         months:   [ 0, 1, 2, 3 ],
         weeks:    [ 0, 1, 2, 3 ],
         days:     [ 0, 1, 2, 3, 4, 5, 6  ],
-        hours:    [ 0, 1, 2, 3 ],
-        minutes:  [ 0, 1, 2, 3 ],
+        hours:    Array.apply(null, Array(24)).map(function (x, i) { return i; }),
+        minutes:  Array.apply(null, Array(60)).map(function (x, i) { return i; }),
         seconds:  Array.apply(null, Array(60)).map(function (x, i) { return i; })
     };
 
-    sched = new OpenSchedule('Hourly', 0, 0, 0, 9, 30, 0);
+    sched = {howOften:'hourly', months:0, weeks:0, days:0, hours:0, minutes:0, seconds:0};
+    openSched= {
+        seconds: 0,
+        minutes: 0
+    }
+
 
     @Input() device: Device;
 
@@ -68,9 +72,8 @@ export class DeviceDetailComponent implements OnInit {
         console.log('WIP');
     }
 
-    updateSchedule(): void {
-        let f = this.device.frequency,
-        oneMonth:number = 2592000,
+    updateSchedule(f:number, init:boolean): void {
+        let oneMonth:number = 2592000,
         oneWeek:number  = 604800,
         oneDay:number   = 86400,
         oneHour:number  = 3600;
@@ -83,21 +86,26 @@ export class DeviceDetailComponent implements OnInit {
 
         this.sched.seconds = Math.floor((f - ((this.sched.months * oneMonth) + (this.sched.weeks * oneWeek) + (this.sched.days * oneDay) + (this.sched.hours * oneHour) + (this.sched.minutes * 60))));
 
-        if (this.sched.months > 0) {
-            this.sched.howOften = 'monthly';
-        } else if (this.sched.weeks > 0) {
-            this.sched.howOften = 'weekly';
-        } else if (this.sched.days > 0) {
-            this.sched.howOften = 'daily';
-        } else if (this.sched.hours > 0) {
-            this.sched.howOften = 'hourly';
-        } else if (this.sched.minutes > 0) {
-            this.sched.howOften = 'minutes';
-        } else {
-            this.sched.howOften = 'seconds';
+        if (init) {
+            if (this.sched.months > 0) {
+                this.sched.howOften = 'monthly';
+            } else if (this.sched.weeks > 0) {
+                this.sched.howOften = 'weekly';
+            } else if (this.sched.days > 0) {
+                this.sched.howOften = 'daily';
+            } else if (this.sched.hours > 0) {
+                this.sched.howOften = 'hourly';
+            } else if (this.sched.minutes > 0) {
+                this.sched.howOften = 'minutes';
+            } else {
+                this.sched.howOften = 'seconds';
+            }
         }
+    }
 
-        console.log(this.sched);
+    updateOpenSchedule(t: number): void {
+        this.openSched.minutes = t > 60 ? Math.floor(t / 60) : 0;
+        this.openSched.seconds = t - (this.openSched.minutes * 60);
     }
 
     queryDevice(): void {
@@ -107,7 +115,8 @@ export class DeviceDetailComponent implements OnInit {
             data.id = this.device.id; // ID/address not stored on device
             this.device = data;
             this.deviceFetched = true;
-            this.updateSchedule();
+            this.updateSchedule(this.device.frequency, true);
+            this.updateOpenSchedule(this.device.timeOpen);
         }, () => {
             console.log('sad face');
         });
