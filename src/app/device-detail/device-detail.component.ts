@@ -21,6 +21,7 @@ declare var window: any;
 export class DeviceDetailComponent implements OnInit {
 
     deviceFetched: boolean;
+    wateringForm;
 
     schedOpts = {
         howOften: [ 'monthly', 'weekly', 'daily', 'hourly', 'minutes', 'seconds' ],
@@ -66,10 +67,6 @@ export class DeviceDetailComponent implements OnInit {
                     console.log('Update the UI to let the user know to turn on their bt');
             });
         }
-    }
-
-    onSubmit(): void {
-        console.log('WIP');
     }
 
     updateSchedule(f:number, init:boolean): void {
@@ -122,10 +119,18 @@ export class DeviceDetailComponent implements OnInit {
         });
     }
 
-    test(x) {
-        console.log('whats your value already????');
-        console.dir( x);
+    onSubmit(): void {
+        //TODO: Validate form better!
+        if (!this.device.name || this.device.name == "") {
+            alert('please give your plant a name');
+        } else {
+            let aquaMessage: string;
+
+            aquaMessage = `f=${this.device.frequency}-t=${this.device.timeOpen}-o=${this.device.servoOpen}-c=${this.device.servoClose}-n=${this.device.name}`;
+        }
+
     }
+
 
     getDeviceDefault(): void {
         const id = this.route.snapshot.paramMap.get('id');

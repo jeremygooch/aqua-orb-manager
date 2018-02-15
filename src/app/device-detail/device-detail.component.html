@@ -12,13 +12,13 @@
     <a (click)="testc()">Choose picture</a>
     <div><span>Bluetooth Address: </span>{{device.id}}</div>
     <div>
-        <label>name:
-            <input [(ngModel)]="device.name" placeholder="name"/>
+        <label>My Name Is:
+            <input [(ngModel)]="device.name" name="deviceName" placeholder="name" required />
         </label>
     </div>
 
     <h3>Watering Information</h3>
-    <form #wateringForm="ngForm"  (ngSubmit)="onSubmit()">
+    <form #wateringScheduleForm="ngForm" (ngSubmit)="onSubmit()">
         <fieldset>
             <legend>Watering Info:</legend>
             <p>How often to Water:
@@ -74,10 +74,10 @@
                 </p>
             </fieldset>
 
-            Open Angle: <input type="range" min="0" max="79" value="{{ device.servoOpen }}" class="slider" id="openAngle"><br />
-            Closed Angle: <input type="range" min="80" max="180" value="{{ device.servoClose }}" class="slider" id="closedAngle"><br />
+            <p>Open Angle: <input type="range" min="0" max="79" value="{{ device.servoOpen }}" class="slider" id="openAngle"></p>
+            <p>Closed Angle: <input type="range" min="80" max="180" value="{{ device.servoClose }}" class="slider" id="closedAngle"></p>
         </fieldset>
+        <button type="submit"  [disabled]="!wateringScheduleForm.form.valid">Save Settings"</button>
     </form>
     <button (click)="goBack()">go back</button>
-    <button (click)="save()">Save Settings</button>
 </div>
