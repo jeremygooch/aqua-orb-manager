@@ -101,6 +101,19 @@ export class DiscoverService {
                     })
                 });
             });
+        } else {
+            return new Promise(resolve => {
+                window.setTimeout(() => {
+                    resolve({
+                        name: "My Amazing Plant",
+                        frequency: 4150928,
+                        // frequency: 3601,
+                        timeOpen: 2,
+                        servoOpen: 0,
+                        servoClose: 100
+                    });
+                }, 1500);
+            });
         }
     }
 }

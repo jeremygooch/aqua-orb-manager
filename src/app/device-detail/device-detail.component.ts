@@ -1,11 +1,13 @@
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { Component, OnInit, Input, NgZone } from '@angular/core';
+
 
 import { DeviceService }  from '../device.service';
 
-import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { Device } from '../device';
 import { DiscoverService } from '../discover.service';
+import { OpenSchedule } from './open-schedule';
 
 declare var navigator: any;
 declare var cordova: any;
@@ -18,6 +20,20 @@ declare var window: any;
     styleUrls: ['./device-detail.component.css']
 })
 export class DeviceDetailComponent implements OnInit {
+
+    deviceFetched: boolean;
+
+    schedOpts = {
+        howOften: [ 'monthly', 'weekly', 'daily', 'hourly', 'minutes', 'seconds' ],
+        months:   [ 0, 1, 2, 3 ],
+        weeks:    [ 0, 1, 2, 3 ],
+        days:     [ 0, 1, 2, 3, 4, 5, 6  ],
+        hours:    [ 0, 1, 2, 3 ],
+        minutes:  [ 0, 1, 2, 3 ],
+        seconds:  Array.apply(null, Array(60)).map(function (x, i) { return i; })
+    };
+
+    sched = new OpenSchedule('Hourly', 0, 0, 0, 9, 30, 0);
 
     @Input() device: Device;
 
@@ -32,13 +48,13 @@ export class DeviceDetailComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        console.dir(navigator.camera);
-
+        console.log('[NOTE: Need to see if I should fetch previous value from db and offer to apply - resave previous.]')
+        console.log('[NOTE: BT Not connected??, remind - saved changes can be reapplied at a later time]');
+        this.deviceFetched = false;
         this.getDeviceDefault();
         if (!this.discoverService.setupNew()) {
             this.noConnection = true;
         } else {
-            console.dir(this.discoverService.isAvailable);
             this.discoverService.isAvailable().then(avail => {
                 if (avail)
                     this.queryDevice();
@@ -48,17 +64,58 @@ export class DeviceDetailComponent implements OnInit {
         }
     }
 
+    onSubmit(): void {
+        console.log('WIP');
+    }
+
+    updateSchedule(): void {
+        let f = this.device.frequency,
+        oneMonth:number = 2592000,
+        oneWeek:number  = 604800,
+        oneDay:number   = 86400,
+        oneHour:number  = 3600;
+
+        this.sched.months  = Math.floor(f / oneMonth);
+        this.sched.weeks   = Math.floor((f - (this.sched.months * oneMonth)) / oneWeek);
+        this.sched.days    = Math.floor((f - ((this.sched.months * oneMonth) + (this.sched.weeks * oneWeek))) / oneDay);
+        this.sched.hours   = Math.floor((f - ((this.sched.months * oneMonth) + (this.sched.weeks * oneWeek) + (this.sched.days * oneDay))) / oneHour);
+        this.sched.minutes = Math.floor((f - ((this.sched.months * oneMonth) + (this.sched.weeks * oneWeek) + (this.sched.days * oneDay) + (this.sched.hours * oneHour))) / 60);
+
+        this.sched.seconds = Math.floor((f - ((this.sched.months * oneMonth) + (this.sched.weeks * oneWeek) + (this.sched.days * oneDay) + (this.sched.hours * oneHour) + (this.sched.minutes * 60))));
+
+        if (this.sched.months > 0) {
+            this.sched.howOften = 'monthly';
+        } else if (this.sched.weeks > 0) {
+            this.sched.howOften = 'weekly';
+        } else if (this.sched.days > 0) {
+            this.sched.howOften = 'daily';
+        } else if (this.sched.hours > 0) {
+            this.sched.howOften = 'hourly';
+        } else if (this.sched.minutes > 0) {
+            this.sched.howOften = 'minutes';
+        } else {
+            this.sched.howOften = 'seconds';
+        }
+
+        console.log(this.sched);
+    }
+
     queryDevice(): void {
         //TODO: Show old info on screen (from db) with content grayed out and loading ux...
         this.discoverService.queryDevice(this.device.id).then(data => {
             data.imgPath = this.device.imgPath || "" ; // Image path not stored on device
             data.id = this.device.id; // ID/address not stored on device
             this.device = data;
-            console.log('device updated to this:');
-            console.dir(data);
+            this.deviceFetched = true;
+            this.updateSchedule();
         }, () => {
             console.log('sad face');
         });
+    }
+
+    test(x) {
+        console.log('whats your value already????');
+        console.dir( x);
     }
 
     getDeviceDefault(): void {

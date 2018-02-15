@@ -1,6 +1,8 @@
 <div *ngIf="device">
-
-    <h2>{{ device.name | uppercase }} Details</h2>
+    <div *ngIf="!deviceFetched" style="display: block; height: 100%; width: 100vh; position: absolute; top: 0; left: 0; background: rgba(255, 255, 255, 0.58);"></div>
+    <h2>
+        {{ device.name | uppercase }} Details
+    </h2>
     <h3 *ngIf="noConnection">Could not connect to device</h3>
     <div class="device-image">
         <img *ngIf="device.imgPath==''" src="assets/aqua-orb-icon.png" class="placeholder">
@@ -16,21 +18,51 @@
     </div>
 
     <h3>Watering Information</h3>
-    <form>
+    <form #wateringForm="myForm"  (ngSubmit)="onSubmit()">
         <fieldset>
             <legend>Watering Info:</legend>
-            Water Every: <input type="range" min="1" max="60" value="5" class="slider" id="waterFreq"><span>val here.</span>
-            <select name="waterFreqUnit">
-                <option value="weeks">Weeks</option>
-                <option value="days">Days</option>
-                <option selected="true" value="hours">Hours</option>
-                <option value="minutes">Minutes</option>
-            </select><br />
-            Leave valve open for: <input type="range" min="1" max="60" value="5" class="slider" id="openTime">
-            <select name="openTimeUnit">
-                <option selected="true" value="seconds">Seconds</option>
-                <option value="minutes">Minutes</option>
-            </select><br />
+            <p>How often to Water:
+                <select (change)="updateSchedule()" name="howOften" [ngModel]="sched.howOften">
+                    <option *ngFor="let param of schedOpts.howOften" [value]="param">{{ param  | titlecase }}</option>
+                </select>
+            </p>
+            <fieldset>
+                <legend>Water Every: </legend>
+                <p>Month<span *ngIf="months != 1">s</span>:
+                    <select name="months" [(ngModel)]="sched.months">
+                        <option *ngFor="let param of schedOpts.months" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+                <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly'">Week<span *ngIf="sched.weeks != 1">s</span>:
+                    <select name="weeks" [(ngModel)]="sched.weeks">
+                        <option *ngFor="let param of schedOpts.weeks" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+                <p>Day<span *ngIf="days != 1">s</span>:
+                    <select name="days" [(ngModel)]="sched.days">
+                        <option *ngFor="let param of schedOpts.days" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+                <p>Hour<span *ngIf="hours != 1">s</span>:
+                    <select name="hours" [(ngModel)]="sched.hours">
+                        <option *ngFor="let param of schedOpts.hours" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+                <p>Minute<span *ngIf="minutes != 1">s</span>:
+                    <select name="minutes" [(ngModel)]="sched.minutes">
+                        <option *ngFor="let param of schedOpts.minutes" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+                <p>Second<span *ngIf="seconds != 1">s</span>:
+                    <select name="seconds" [(ngModel)]="sched.seconds">
+                        <option *ngFor="let param of schedOpts.seconds" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+            </fieldset>
+
+            Leave valve open for:
+            <input type="range" min="1" max="15" value="{{ device.timeOpen }}" class="slider" id="openTime">Minutes<br />
+            <input type="range" min="1" max="60" value="{{ device.timeOpen }}" class="slider" id="openTime">Seconds<br />
             Open Angle: <input type="range" min="0" max="79" value="{{ device.servoOpen }}" class="slider" id="openAngle"><br />
             Closed Angle: <input type="range" min="80" max="180" value="{{ device.servoClose }}" class="slider" id="closedAngle"><br />
         </fieldset>

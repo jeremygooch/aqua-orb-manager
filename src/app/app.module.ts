@@ -1,7 +1,6 @@
-// import { OnsenModule } from 'ngx-onsenui';
-
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
@@ -31,6 +30,7 @@ import { DiscoverComponent } from './discover/discover.component';
         // OnsenModule,
         FormsModule,
         AppRoutingModule,
+        CommonModule
     ],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA
