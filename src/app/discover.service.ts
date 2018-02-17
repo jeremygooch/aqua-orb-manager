@@ -53,6 +53,37 @@ export class DiscoverService {
         }
     }
 
+    write(msg: string, id: string): Promise<any> {
+        if (!this.debugging) {
+            console.log('going to send this message');
+            console.log(msg);
+            return new Promise(resolve => {
+                bluetoothSerial.isConnected(() => {
+                    console.log('youre ALREADY connected');
+                    writeMsg();
+                }, () => {
+                    console.log('youre not connected so imma try to connect you.. one sec..');
+
+
+
+                    bluetoothSerial.connect(id, () => {
+                        writeMsg();
+                    });
+                });
+                function writeMsg() {
+                    console.log('writing message...');
+                    // var test = "[f:0000015|t:0003|o:000|c:100|n:asdf-ggg-two-thre,]";
+                    // console.log('test: ', test);
+                    console.log('msg : ', msg);
+                    bluetoothSerial.write(msg, d => {
+                        console.log('got this back after writing the new schedule');
+                        console.log(d);
+                    });
+                }
+            });
+        }
+    }
+
     // queryDevice(id): Observable<Device> {
     queryDevice(id: string): Promise<any> {
         // Device mapping:

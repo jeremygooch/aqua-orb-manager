@@ -124,9 +124,59 @@ export class DeviceDetailComponent implements OnInit {
         if (!this.device.name || this.device.name == "") {
             alert('please give your plant a name');
         } else {
-            let aquaMessage: string;
+            let aquaMessage: string,
+            fPrefix: string,
+            tPrefix: string,
+            oPrefix: string,
+            cPrefix: string;
 
-            aquaMessage = `f=${this.device.frequency}-t=${this.device.timeOpen}-o=${this.device.servoOpen}-c=${this.device.servoClose}-n=${this.device.name}`;
+            // 1234567
+
+            // Cannot simply prefix the values with the appropriate num of 0's as JS will complain about octals or simply collapse the values.
+            if (this.device.frequency < 10) {
+                fPrefix = '000000';
+            } else if (this.device.frequency < 100) {
+                fPrefix = '00000';
+            } else if (this.device.frequency < 1000) {
+                fPrefix = '0000';
+            } else if (this.device.frequency < 10000) {
+                fPrefix = '000';
+            } else if (this.device.frequency < 100000) {
+                fPrefix = '00';
+            } else if (this.device.frequency < 1000000) {
+                fPrefix = '0';
+            } else {
+                fPrefix = '';
+            }
+            if (this.device.timeOpen < 10) {
+                tPrefix = '000';
+            } else if (this.device.timeOpen < 100) {
+                tPrefix = '00';
+            } else if (this.device.timeOpen < 1000) {
+                tPrefix = '0';
+            } else {
+                tPrefix = '';
+            }
+            if (this.device.servoOpen < 10) {
+                oPrefix = '00';
+            } else if (this.device.servoOpen < 100) {
+                oPrefix = '0';
+            } else {
+                oPrefix = '';
+            }
+            if (this.device.servoClose < 10) {
+                cPrefix = '00';
+            } else if (this.device.servoClose < 100) {
+                cPrefix = '0';
+            } else {
+                cPrefix = '';
+            }
+
+            aquaMessage = `[f:${fPrefix}${this.device.frequency}|t:${tPrefix}${this.device.timeOpen}|o:${oPrefix}${this.device.servoOpen}|c:${cPrefix}${this.device.servoClose}|n:${this.device.name}]`;
+
+            this.discoverService.write(aquaMessage, this.device.id).then(data => {
+                console.log('pass thrown....');
+            });
         }
 
     }
