@@ -22,6 +22,8 @@ export class DeviceDetailComponent implements OnInit {
 
     deviceFetched: boolean;
     wateringForm;
+    dbDevice;
+    dataMismatch: boolean = false;
 
     schedOpts = {
         howOften: [ 'monthly', 'weekly', 'daily', 'hourly', 'minutes', 'seconds' ],
@@ -53,8 +55,6 @@ export class DeviceDetailComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        console.log('[NOTE: Need to see if I should fetch previous value from db and offer to apply - resave previous.]')
-        console.log('[NOTE: BT Not connected??, remind - saved changes can be reapplied at a later time]');
         this.deviceFetched = false;
         this.getDeviceDefault();
         if (!this.discoverService.setupNew()) {
@@ -110,6 +110,17 @@ export class DeviceDetailComponent implements OnInit {
         this.discoverService.queryDevice(this.device.id).then(data => {
             data.imgPath = this.device.imgPath || "" ; // Image path not stored on device
             data.id = this.device.id; // ID/address not stored on device
+
+
+            if (data.frequency  != this.device.frequency ||
+                data.name       != this.device.name ||
+                data.servoOpen  != this.device.servoOpen ||
+                data.servoClose != this.device.servoClose ||
+                data.timeOpen   != this.device.timeOpen
+               ) {
+                this.dbDevice = this.device;
+                this.dataMismatch = true;
+            }
             this.device = data;
             this.deviceFetched = true;
             this.updateSchedule(this.device.frequency, true);
@@ -117,6 +128,28 @@ export class DeviceDetailComponent implements OnInit {
         }, () => {
             console.log('sad face');
         });
+    }
+
+    verifyDBMatch(): boolean {
+        this.dbDevice = this.deviceService.getDevice(this.device.id);
+        console.dir(this.dbDevice);
+        console.dir(this.device);
+        if (this.dbDevice.frequency  != this.device.frequency ||
+            this.dbDevice.name       != this.device.name ||
+            this.dbDevice.servoOpen  != this.device.servoOpen ||
+            this.dbDevice.servoClose != this.device.servoClose ||
+            this.dbDevice.timeOpen   != this.device.timeOpen
+           ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    updateDevice(dev): void {
+        console.dir(dev);
+        this.device = dev;
+        this.dataMismatch = false;
     }
 
     onSubmit(): void {
@@ -130,7 +163,6 @@ export class DeviceDetailComponent implements OnInit {
             oPrefix: string,
             cPrefix: string;
 
-            // 1234567
 
             // Cannot simply prefix the values with the appropriate num of 0's as JS will complain about octals or simply collapse the values.
             if (this.device.frequency < 10) {
@@ -175,12 +207,11 @@ export class DeviceDetailComponent implements OnInit {
             aquaMessage = `[f:${fPrefix}${this.device.frequency}|t:${tPrefix}${this.device.timeOpen}|o:${oPrefix}${this.device.servoOpen}|c:${cPrefix}${this.device.servoClose}|n:${this.device.name}]`;
 
             this.discoverService.write(aquaMessage, this.device.id).then(data => {
-                console.log('pass thrown....');
+                this.deviceService.updateDevice(this.device);
             });
         }
 
     }
-
 
     getDeviceDefault(): void {
         const id = this.route.snapshot.paramMap.get('id');
@@ -232,7 +263,6 @@ export class DeviceDetailComponent implements OnInit {
 
     save():void {
         console.log('save to storage and update bluetooth...');
-        // Use this: bluetoothSerial.setName to change the device name
     }
 }
 

@@ -55,32 +55,39 @@ export class DiscoverService {
 
     write(msg: string, id: string): Promise<any> {
         if (!this.debugging) {
-            console.log('going to send this message');
-            console.log(msg);
             return new Promise(resolve => {
                 bluetoothSerial.isConnected(() => {
-                    console.log('youre ALREADY connected');
                     writeMsg();
                 }, () => {
-                    console.log('youre not connected so imma try to connect you.. one sec..');
-
-
-
-                    bluetoothSerial.connect(id, () => {
-                        writeMsg();
-                    });
+                    bluetoothSerial.connect(id, () => { writeMsg(); });
                 });
                 function writeMsg() {
-                    console.log('writing message...');
-                    // var test = "[f:0000015|t:0003|o:000|c:100|n:asdf-ggg-two-thre,]";
-                    // console.log('test: ', test);
-                    console.log('msg : ', msg);
                     bluetoothSerial.write(msg, d => {
-                        console.log('got this back after writing the new schedule');
-                        console.log(d);
+                        resolve(d);
                     });
                 }
             });
+        }
+    }
+
+    list(): Promise<any> {
+        if (!this.debugging) {
+            return new Promise(resolve => {
+                bluetoothSerial.list(btd => { resolve(btd); });
+            });
+        } else {
+            return new Promise(resolve => {
+                window.setTimeout(() => {
+                    resolve([
+                        {name: "HC-05",               address: "01:01", id: "02:02", class: 7936},
+                        {name: "TOYOTA Corolla",      address: "03:03", id: "03:03", class: 1032},
+                        {name: "myplant01",           address: "04:04", id: "04:04", class: 7936},
+                        {name: "Daydream controller", address: "05:05", id: "05:05", class: 7936},
+                        {name: "HMDX Neutron",        address: "06:06", id: "07:07", class: 1028},
+                        {name: "abiding-aardvark",    address: "08:08", id: "09:09", class: 7936}
+                    ]);
+                }, 1000);
+            })
         }
     }
 
@@ -98,39 +105,37 @@ export class DiscoverService {
         if (!this.debugging) {
             return new Promise(resolve => {
                 bluetoothSerial.isConnected(() => {
-                    console.log('youre connected');
+                    writeMsg();
+                    // console.log('youre connected');
                 }, () => {
-                    console.log('youre not connected so imma try to connect you.. one sec..');
                     bluetoothSerial.connect(id, () => {
-                        bluetoothSerial.write("[q]", () => { }, e => { resolve({ error: true, message: 'Could not query device' }) });
-                        bluetoothSerial.subscribe('}', btData => {
-                            let out: Object;
-                            try {
-                                out = JSON.parse(btData)
-                            } catch (e) {
-                                out = {
-                                    error: true,
-                                    message: 'Could not parse json from device',
-                                    code: e
-                                };
-                            }
-
-                            resolve(out);
-                        }, e => {
-                            resolve({
+                        writeMsg();
+                    });
+                });
+                function writeMsg() {
+                    bluetoothSerial.write("[q]", () => { }, e => { resolve({ error: true, message: 'Could not query device' }) });
+                    bluetoothSerial.subscribe('}', btData => {
+                        let out: Object;
+                        try {
+                            out = JSON.parse(btData)
+                        } catch (e) {
+                            out = {
                                 error: true,
-                                message: 'Could not subscribe to bluetooth',
+                                message: 'Could not parse json from device',
                                 code: e
-                            })
-                            console.log(e);
-                        });
-                    }, () => {
+                            };
+                        }
+
+                        resolve(out);
+                    }, e => {
                         resolve({
                             error: true,
-                            message: 'Could not establish connection with bluetooth device'
-                        });
-                    })
-                });
+                            message: 'Could not subscribe to bluetooth',
+                            code: e
+                        })
+                        console.log(e);
+                    });
+                }
             });
         } else {
             return new Promise(resolve => {

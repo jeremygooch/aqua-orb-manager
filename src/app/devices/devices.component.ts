@@ -29,8 +29,13 @@ export class DevicesComponent implements OnInit {
 
     getDevices(): void {
         this.devices = this.deviceService.getDevices();
+        console.dir(this.devices);
+        console.log(this.devices);
         if (this.devices.length > 0) {} else {
-            alert('no devices. redirect to discover screen....');
+            // alert('no devices. redirect to discover screen....');
+            this.zone.run(() => {
+                this.router.navigate(['/welcome']);
+            });
         }
     }
 

@@ -14,54 +14,59 @@ export class DeviceService {
 
     getDevices(): Device[] {
         const out = JSON.parse(this.db.getItem('devices'));
-        if (out) {
-            out.frequency = out.frequency || 0;
-            out.timeOpen = out.timeOpen || 0;
-            out.servoOpen = out.servoOpen || 0;
-            out.servoClose = out.servoClose || 0;
-        }
         return out;
     }
 
-    saveDevice(dev):boolean {
-        if (!dev) {
-            console.log('no device to save');
-            return false;
+    // saveDevice(dev):boolean {
+    //     if (!dev) {
+    //         return false;
+    //     } else {
+    //         if (!this.hasDevices()) {
+    //             this.db.setItem('devices', JSON.stringify([{
+    //                 id: dev.address,
+    //                 name: dev.name,
+    //                 imgPath: '',
+    //                 frequency: 0,
+    //                 timeOpen: 0,
+    //                 servoOpen: 0,
+    //                 servoClose: 0
+    //             }]));
+    //         } else {
+    //             this.curDevices = this.getDevices();
+    //             this.curDevices.push({
+    //                 id: dev.address,
+    //                 name: dev.name,
+    //                 imgPath: '',
+    //                 frequency: 0,
+    //                 timeOpen: 0,
+    //                 servoOpen: 0,
+    //                 servoClose: 0
+    //             });
+    //             this.db.setItem('devices', JSON.stringify(this.curDevices));
+    //         }
+    //         return true;
+    //     }
+    // }
+
+    addDevice(dev:Device[]):boolean {
+        if (!this.hasDevices()) {
+            console.log('no previous devices');
+            this.db.setItem('devices', JSON.stringify([dev]));
         } else {
-            if (!this.hasDevices()) {
-                this.db.setItem('devices', JSON.stringify([{
-                    id: dev.address,
-                    name: dev.name,
-                    imgPath: '',
-                    frequency: 0,
-                    timeOpen: 0,
-                    servoOpen: 0,
-                    servoClose: 0
-                }]));
-            } else {
-                this.curDevices = this.getDevices();
-                this.curDevices.push({
-                    id: dev.address,
-                    name: dev.name,
-                    imgPath: '',
-                    frequency: 0,
-                    timeOpen: 0,
-                    servoOpen: 0,
-                    servoClose: 0
-                });
-                this.db.setItem('devices', JSON.stringify(this.curDevices));
-            }
-            return true;
+            console.log('i has previous devices');
+            this.curDevices = this.getDevices();
+            console.dir(this.curDevices)
+            this.curDevices.push(dev);
+            this.db.setItem('devices', JSON.stringify(this.curDevices));
         }
+        return true;
     }
 
     updateDevice(dev):boolean {
         if (!dev) {
-            console.log('no device to save');
             return false;
         } else {
             if (!this.hasDevices()) {
-                console.log('The database is empty');
                 return false;
             }
             this.curDevices = this.getDevices();

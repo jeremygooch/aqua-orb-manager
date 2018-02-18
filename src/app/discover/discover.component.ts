@@ -1,6 +1,7 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { Device } from '../device';
 import { DeviceService } from '../device.service';
 import { DevicesComponent } from '../devices/devices.component';
 import { DiscoverService } from '../discover.service';
@@ -19,11 +20,13 @@ export class DiscoverComponent implements OnInit {
 
 
     foundDevices;
-    noDevices;
+    // noDevices;
     connectingDevice;
+    noConnection:boolean = false;
     savedDev;
 
     debugging;
+
 
     constructor(
         private zone: NgZone,
@@ -33,22 +36,27 @@ export class DiscoverComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.db.removeItem('devices');
-        if (this.discoverService.setup()) {
-            //TODO: Build out services for bluetooth connection
-            if (typeof bluetoothSerial === 'undefined') { this.debugging = true; }
+        // this.db.removeItem('devices');
+        this.establishConn();
+    }
+
+    establishConn():void {
+        if (!this.discoverService.setupNew()) {
+            this.noConnection = true;
         } else {
-            console.log('turning on disabled bt message here...');
-            this.bluetoothDisabled();
+            this.discoverService.isAvailable().then(avail => {
+                if (avail) {
+                    this.noConnection = false;
+                    this.listDevices();
+                }
+                else
+                    this.noConnection = true;
+            });
         }
-
-
-        if (!this.debugging) bluetoothSerial.isEnabled(this.listDevices.bind(this), this.bluetoothDisabled.bind(this));
-        else this.mockDevices();
     }
 
     mockDevices():void {
-        this.foundDevices = [
+         this.foundDevices = [
             {name: "HC-05",               address: "01:01", id: "02:02", class: 7936},
             {name: "TOYOTA Corolla",      address: "03:03", id: "03:03", class: 1032},
             {name: "myplant01",           address: "04:04", id: "04:04", class: 7936},
@@ -59,72 +67,28 @@ export class DiscoverComponent implements OnInit {
     }
 
     listDevices():void {
-        bluetoothSerial.list(btd => {
+        this.discoverService.list().then(btd => {
             this.foundDevices = btd.filter(bt => !this.deviceService.hasDevice(bt.address));
         });
     }
 
-    bluetoothDisabled():void {
-        this.noDevices = true;
-    }
-
     connectTo(addr: string): void {
-        if (!this.debugging) this.connectToBT(addr);
-        else this.connectToMock(addr);
+        this.connectingDevice = addr;
+        this.discoverService.queryDevice(addr).then(data => {
+            data.imgPath = "" ;
+            data.id = addr;
+            this.deviceService.addDevice(data);
+            this.goToDevices();
+        }, () => {
+            console.log('sad face');
+        });
     }
 
     connectToMock(addr: string): void {
         window.setTimeout(() => {
-            this.saveDevice(addr);
+            // this.deviceService.saveDevice(this.foundDevices.find(device => device.address === addr));
             this.goToDevices();
         }, 3000);
-    }
-
-    saveDevice(addr: string) {
-        this.deviceService.saveDevice(this.foundDevices.find(device => device.address === addr));
-    }
-
-    connectToBT(addr: string):void {
-        // Device mapping:
-        // n: name
-        // f: frequency / time closed
-        // t: time open
-        // o: servo open value
-        // c: servo closed value
-        this.connectingDevice = addr;
-        bluetoothSerial.connect(addr, () => {
-            this.saveDevice(addr);
-            bluetoothSerial.write("[qn]", () => {
-
-                bluetoothSerial.subscribe(']', (data) => {
-                    // Need to update the device in the database....
-                    this.savedDev = this.foundDevices.find(device => device.address === addr);
-                    this.savedDev.name = data.replace(/\{|\}/g, '');
-                    this.savedDev.frequency  = this.savedDev.frequency  || 0;
-                    this.savedDev.timeOpen   = this.savedDev.timeOpen   || 0;
-                    this.savedDev.servoOpen  = this.savedDev.servoOpen  || 0;
-                    this.savedDev.servoClose = this.savedDev.servoClose || 0;
-
-                    this.deviceService.updateDevice(this.savedDev);
-                    this.goToDevices();
-
-                },function(e){console.log(e);});
-
-
-                bluetoothSerial.subscribeRawData((data) => {
-                }, function(error) {
-                    console.log('error');
-                    console.log(error);
-                });
-
-            },  e => {
-                console.log('write fail cb ');
-                console.log(e);
-            });
-        }, (e) => {
-            console.log('do\'h');
-            console.dir(e);
-        });
     }
 
     goToDevices(): void {
