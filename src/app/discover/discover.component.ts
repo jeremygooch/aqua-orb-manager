@@ -15,10 +15,6 @@ declare var bluetoothSerial: any;
     styleUrls: ['./discover.component.css']
 })
 export class DiscoverComponent implements OnInit {
-    // Wipe devices
-    db = window.localStorage;
-
-
     foundDevices;
     // noDevices;
     connectingDevice;
@@ -36,7 +32,6 @@ export class DiscoverComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        // this.db.removeItem('devices');
         this.establishConn();
     }
 

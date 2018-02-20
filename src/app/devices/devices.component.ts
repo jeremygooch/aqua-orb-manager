@@ -39,6 +39,14 @@ export class DevicesComponent implements OnInit {
         }
     }
 
+    dumpdb() {
+        // Wipe devices
+        var db = window.localStorage;
+        console.log('gonna dump db');
+        console.dir(db);
+        db.removeItem('devices');
+    }
+
 
 
     // showDefaultImage(dev): boolean {

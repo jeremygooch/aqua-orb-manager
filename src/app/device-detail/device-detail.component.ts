@@ -111,7 +111,6 @@ export class DeviceDetailComponent implements OnInit {
             data.imgPath = this.device.imgPath || "" ; // Image path not stored on device
             data.id = this.device.id; // ID/address not stored on device
 
-
             if (data.frequency  != this.device.frequency ||
                 data.name       != this.device.name ||
                 data.servoOpen  != this.device.servoOpen ||
@@ -130,24 +129,7 @@ export class DeviceDetailComponent implements OnInit {
         });
     }
 
-    verifyDBMatch(): boolean {
-        this.dbDevice = this.deviceService.getDevice(this.device.id);
-        console.dir(this.dbDevice);
-        console.dir(this.device);
-        if (this.dbDevice.frequency  != this.device.frequency ||
-            this.dbDevice.name       != this.device.name ||
-            this.dbDevice.servoOpen  != this.device.servoOpen ||
-            this.dbDevice.servoClose != this.device.servoClose ||
-            this.dbDevice.timeOpen   != this.device.timeOpen
-           ) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     updateDevice(dev): void {
-        console.dir(dev);
         this.device = dev;
         this.dataMismatch = false;
     }
@@ -206,9 +188,16 @@ export class DeviceDetailComponent implements OnInit {
 
             aquaMessage = `[f:${fPrefix}${this.device.frequency}|t:${tPrefix}${this.device.timeOpen}|o:${oPrefix}${this.device.servoOpen}|c:${cPrefix}${this.device.servoClose}|n:${this.device.name}]`;
 
-            this.discoverService.write(aquaMessage, this.device.id).then(data => {
-                this.deviceService.updateDevice(this.device);
-            });
+            console.log('what is the message');
+            console.log(aquaMessage);
+            console.log('and frequency');
+            console.log(this.device.frequency);
+            console.log('and frequency prefix');
+            console.log(fPrefix);
+
+            // this.discoverService.write(aquaMessage, this.device.id).then(data => {
+            //     this.deviceService.updateDevice(this.device);
+            // });
         }
 
     }

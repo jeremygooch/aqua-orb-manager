@@ -57,7 +57,9 @@ export class DiscoverService {
         if (!this.debugging) {
             return new Promise(resolve => {
                 bluetoothSerial.isConnected(() => {
-                    writeMsg();
+                    bluetoothSerial.disconnect(() => {
+                        bluetoothSerial.connect(id, () => { writeMsg(); });
+                    });
                 }, () => {
                     bluetoothSerial.connect(id, () => { writeMsg(); });
                 });
@@ -105,8 +107,12 @@ export class DiscoverService {
         if (!this.debugging) {
             return new Promise(resolve => {
                 bluetoothSerial.isConnected(() => {
-                    writeMsg();
-                    // console.log('youre connected');
+                    // Until we can tell if we're connected to the right one, better to disconnect and reconnect
+                    bluetoothSerial.disconnect(() => {
+                        bluetoothSerial.connect(id, () => {
+                            writeMsg();
+                        });
+                    });
                 }, () => {
                     bluetoothSerial.connect(id, () => {
                         writeMsg();
@@ -115,6 +121,8 @@ export class DiscoverService {
                 function writeMsg() {
                     bluetoothSerial.write("[q]", () => { }, e => { resolve({ error: true, message: 'Could not query device' }) });
                     bluetoothSerial.subscribe('}', btData => {
+                        console.dir("btData");
+                        console.dir(btData);
                         let out: Object;
                         try {
                             out = JSON.parse(btData)
