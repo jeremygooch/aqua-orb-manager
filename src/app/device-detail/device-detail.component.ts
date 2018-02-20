@@ -24,6 +24,7 @@ export class DeviceDetailComponent implements OnInit {
     wateringForm;
     dbDevice;
     dataMismatch: boolean = false;
+    newFreq: number;
 
     schedOpts = {
         howOften: [ 'monthly', 'weekly', 'daily', 'hourly', 'minutes', 'seconds' ],
@@ -100,6 +101,19 @@ export class DeviceDetailComponent implements OnInit {
         }
     }
 
+    recalcFreq(): void {
+        this.device.frequency = (this.sched.months * 2629800) +
+            (this.sched.weeks * 604800) +
+            (this.sched.days * 86400) +
+            (this.sched.hours * 3600) +
+            (this.sched.minutes * 60) +
+            (this.sched.seconds * 1);
+    }
+
+    recalcTimeOpen(): void {
+        this.device.timeOpen = (this.openSched.minutes * 60) + (this.openSched.seconds * 1);
+    }
+
     updateOpenSchedule(t: number): void {
         this.openSched.minutes = t > 60 ? Math.floor(t / 60) : 0;
         this.openSched.seconds = t - (this.openSched.minutes * 60);
@@ -122,8 +136,6 @@ export class DeviceDetailComponent implements OnInit {
             }
             this.device = data;
             this.deviceFetched = true;
-            this.updateSchedule(this.device.frequency, true);
-            this.updateOpenSchedule(this.device.timeOpen);
         }, () => {
             console.log('sad face');
         });
@@ -131,6 +143,8 @@ export class DeviceDetailComponent implements OnInit {
 
     updateDevice(dev): void {
         this.device = dev;
+        this.updateSchedule(this.device.frequency, true);
+        this.updateOpenSchedule(this.device.timeOpen);
         this.dataMismatch = false;
     }
 
@@ -188,16 +202,11 @@ export class DeviceDetailComponent implements OnInit {
 
             aquaMessage = `[f:${fPrefix}${this.device.frequency}|t:${tPrefix}${this.device.timeOpen}|o:${oPrefix}${this.device.servoOpen}|c:${cPrefix}${this.device.servoClose}|n:${this.device.name}]`;
 
-            console.log('what is the message');
-            console.log(aquaMessage);
-            console.log('and frequency');
-            console.log(this.device.frequency);
-            console.log('and frequency prefix');
-            console.log(fPrefix);
+            // console.log(aquaMessage);
 
-            // this.discoverService.write(aquaMessage, this.device.id).then(data => {
-            //     this.deviceService.updateDevice(this.device);
-            // });
+            this.discoverService.write(aquaMessage, this.device.id).then(data => {
+                this.deviceService.updateDevice(this.device);
+            });
         }
 
     }
