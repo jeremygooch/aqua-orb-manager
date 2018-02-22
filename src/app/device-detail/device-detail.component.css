@@ -3,8 +3,34 @@
     clear: both;
     width: 100%;
     text-align: center;
+    height: 165px;
 }
 
-img.placeholder {
-    opacity: 0.5;
+.placeholder {
+    opacity: 0.25;
+    height: 75px;
+    margin-top: 4rem;
+}
+
+.defaultImage {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.navigation {
+    margin-bottom: 0;
+}
+
+.loading {
+    position: fixed;
+    top: 12rem;
+}
+
+.overlay {
+    background: rgba(255, 255, 255, 0.58);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
 }

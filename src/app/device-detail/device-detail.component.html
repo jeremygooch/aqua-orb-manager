@@ -1,16 +1,19 @@
 <div *ngIf="device">
-    <div *ngIf="!deviceFetched" style="display: block; height: 100%; width: 100vh; position: absolute; top: 0; left: 0; background: rgba(255, 255, 255, 0.58);"></div>
+    <div *ngIf="!deviceFetched" class="overlay"></div>
     <div *ngIf="!dataMismatch">
-        <h2>
-            {{ device.name | uppercase }} Details
-        </h2>
+        <nav class="navigation">
+            <section class="container">
+                <div class="back-link" (click)="goBack()">
+                    <i class="fa fa-chevron-left"></i>
+                </div>
+                <h2>{{ device.name | uppercase }}</h2>
+            </section>
+        </nav>
         <h3 *ngIf="noConnection">Could not connect to device</h3>
-        <div class="device-image">
-            <img *ngIf="device.imgPath==''" src="assets/aqua-orb-icon.png" class="placeholder">
+        <div class="device-image" [class.defaultImage]="device.imgPath == ''">
+            <img *ngIf="device.imgPath==''" src="assets/plant-default.svg" class="placeholder">
             <img *ngIf="device.imgPath!=''" src="{{ device.imgPath }}">
         </div>
-        <a (click)="openCamera()">Take new picture</a>
-        <a (click)="choosePic()">Choose picture</a>
         <div><span>Bluetooth Address: </span>{{device.id}}</div>
         <div>
             <label>My Name Is:
@@ -104,7 +107,11 @@
         </div>
     </div>
 
+    <div *ngIf="!deviceFetched" class="loading">
+        <i class="fa fa-spinner fa-spin fa-5x"></i>
+    </div>
 
 
-<button (click)="goBack()">go back</button>
+
+    <button (click)="goBack()">go back</button>
 </div>

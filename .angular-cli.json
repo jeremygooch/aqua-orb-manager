@@ -18,8 +18,10 @@
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
-      "styles": [
-        "styles.css"
+        "styles": [
+            "../node_modules/milligram/dist/milligram.min.css",
+            "../node_modules/font-awesome/css/font-awesome.min.css",
+            "styles.css"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",

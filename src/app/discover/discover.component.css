@@ -1,3 +1,15 @@
-.connecting {
-    border: 1px solid red;
+.found-devices li {
+    padding: 1rem 0;
+    list-style: none;
+    margin-left: 4rem;
+}
+
+.found-devices li span {
+    display: block;
+    font-weight: bold;
+}
+
+.found-devices li small {
+    display: block;
+    color: rgba(0,0,0,0.52);
 }

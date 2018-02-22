@@ -1,6 +1,7 @@
 import { Component, OnInit, NgZone } from '@angular/core';
-import { Device } from '../device';
+import { Location } from '@angular/common';
 import { Router } from '@angular/router';
+import { Device } from '../device';
 
 import { DeviceService } from '../device.service';
 
@@ -16,6 +17,7 @@ export class DevicesComponent implements OnInit {
     constructor(
         private zone: NgZone,
         private router: Router,
+        private location: Location,
         private deviceService: DeviceService
     ) { }
 
@@ -45,6 +47,7 @@ export class DevicesComponent implements OnInit {
         console.log('gonna dump db');
         console.dir(db);
         db.removeItem('devices');
+        this.location.back();
     }
 
 

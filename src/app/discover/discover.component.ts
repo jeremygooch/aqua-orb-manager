@@ -1,5 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 import { Device } from '../device';
 import { DeviceService } from '../device.service';
@@ -28,6 +29,7 @@ export class DiscoverComponent implements OnInit {
         private zone: NgZone,
         private discoverService: DiscoverService,
         private deviceService: DeviceService,
+        private location: Location,
         private router: Router
     ) { }
 
@@ -83,7 +85,11 @@ export class DiscoverComponent implements OnInit {
         window.setTimeout(() => {
             // this.deviceService.saveDevice(this.foundDevices.find(device => device.address === addr));
             this.goToDevices();
-        }, 3000);
+        }, 1000);
+    }
+
+    goBack(): void {
+        this.location.back();
     }
 
     goToDevices(): void {
