@@ -10,7 +10,7 @@
 
 <ul class="devices">
     <li *ngFor="let device of devices">
-        <a routerLink="/detail/{{device.id}}" class="orb-image">
+        <a routerLink="/detail/{{device.id}}" class="orb-image" [ngStyle]="{ 'background-image': 'url(' + device.imgPath + ')'}">
             <img *ngIf="device.imgPath==''" src="assets/plant-default.svg" class="placeholder">
         </a>
         <div class="orb-name">{{device.name}}</div>
@@ -26,4 +26,4 @@
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
-<button (click)="dumpdb()">Reset App</button>
+<button class="button button-outline" (click)="dumpdb()">Reset App</button>

@@ -23,6 +23,7 @@ export class DeviceDetailComponent implements OnInit {
     deviceFetched: boolean;
     wateringForm;
     dbDevice;
+    cannotConnect: boolean = false;
     dataMismatch: boolean = false;
     newFreq: number;
 
@@ -58,6 +59,11 @@ export class DeviceDetailComponent implements OnInit {
     ngOnInit(): void {
         this.deviceFetched = false;
         this.getDeviceDefault();
+        // Setup timer to ensure the screen doesnt freeze
+        window.setTimeout(() => {
+            if (!this.deviceFetched) { this.cannotConnect = true; }
+        }, 7000);
+
         if (!this.discoverService.setupNew()) {
             this.noConnection = true;
         } else {
@@ -141,6 +147,11 @@ export class DeviceDetailComponent implements OnInit {
         });
     }
 
+    proceed(): void {
+        this.cannotConnect = false;
+        this.deviceFetched = true;
+    }
+
     updateDevice(dev): void {
         this.device = dev;
         this.updateSchedule(this.device.frequency, true);
@@ -216,11 +227,17 @@ export class DeviceDetailComponent implements OnInit {
         this.device = this.deviceService.getDevice(id);;
     }
 
+    retry(): void {
+        this.cannotConnect = false;
+        this.queryDevice();
+    }
+
     goBack(): void {
         this.location.back();
     }
 
     updateImage(path): void {
+        this.device.imgPath = path;
         this.zone.run(() => {
             this.device.imgPath = path;
         });
@@ -246,7 +263,7 @@ export class DeviceDetailComponent implements OnInit {
     setOptions(srcType): {}{
         return {
             // Some common settings are 20, 50, and 100
-            quality: 50,
+            quality: 100,
             destinationType: navigator.camera.DestinationType.FILE_URI,
             // In this app, dynamically set the picture source, Camera or photo gallery
             sourceType: srcType,
@@ -254,8 +271,8 @@ export class DeviceDetailComponent implements OnInit {
             mediaType: navigator.camera.MediaType.PICTURE,
             allowEdit: true,
             correctOrientation: true,  //Corrects Android orientation quirks
-            targetHeight: 200,
-            targetWidth: 200
+            targetHeight: 600,
+            targetWidth: 800
         }
     }
 

@@ -4,6 +4,10 @@
     width: 100%;
     text-align: center;
     height: 165px;
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50%;
 }
 
 .placeholder {
@@ -33,4 +37,66 @@
     left: 0;
     right: 0;
     overflow: hidden;
+}
+
+.device-image a {
+    position: absolute;
+    left: 2rem;
+    color: rgba(0,0,0,0.25);
+    margin-top: calc(165px - 4rem);
+
+}
+
+.device-image a:nth-child(2) {
+    left: 7rem;
+}
+
+.cannot-connect {
+    border-radius: 5px;
+    background-color: #606c76;
+    color: #fff;
+    width: 26rem;
+    padding: 1rem;
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    margin-left: -13rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+form {
+    padding: 4rem;
+}
+
+p {
+    margin-bottom: 0.5rem;
+}
+
+legend {
+    margin-top: 1rem;
+}
+
+
+.test {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+
+
+.retry {
+    float: right;
+    width: calc(50% - 0.5rem);
+}
+
+.nevermind {
+    float: left;
+    width: calc(50% - 0.5rem);
+    padding: 0;
+    margin-right: 1rem;
+}
+
+.proceed {
+    float: right;
+    width: 100%;
 }

@@ -10,78 +10,78 @@
             </section>
         </nav>
         <h3 *ngIf="noConnection">Could not connect to device</h3>
-        <div class="device-image" [class.defaultImage]="device.imgPath == ''">
-            <img *ngIf="device.imgPath==''" src="assets/plant-default.svg" class="placeholder">
-            <img *ngIf="device.imgPath!=''" src="{{ device.imgPath }}">
-        </div>
-        <div><span>Bluetooth Address: </span>{{device.id}}</div>
-        <div>
-            <label>My Name Is:
-                <input [(ngModel)]="device.name" name="deviceName" placeholder="name" required />
-            </label>
+        <div class="device-image" [class.defaultImage]="device.imgPath == ''" [ngStyle]="{ 'background-image': 'url(' + device.imgPath + ')'}">
+            <img *ngIf="device.imgPath==''" src="assets/plant-default.svg" class="placeholder" (click)="openCamera()">
+            <a (click)="choosePic()"><i class="fa fa-folder fa-2x"></i></a>
+             <a (click)="openCamera()"><i class="fa fa-camera fa-2x"></i></a>
         </div>
 
-        <h3>Watering Information</h3>
         <form #wateringScheduleForm="ngForm" (ngSubmit)="onSubmit()">
+            <input [(ngModel)]="device.name" name="deviceName" placeholder="name" type="text" required />
             <fieldset>
-                <legend>Watering Info:</legend>
-                <p>How often to Water:
+                <legend>How often to Water:</legend>
                     <select (change)="updateSchedule(0)" name="howOften" [(ngModel)]="sched.howOften">
                         <option *ngFor="let param of schedOpts.howOften" [value]="param">{{ param  | titlecase }}</option>
                     </select>
-                </p>
-                <fieldset>
-                    <legend>Water Every: </legend>
-                    <p *ngIf="sched.howOften == 'monthly'">Month<span *ngIf="months != 1">s</span>:
-                        <select name="months" [(ngModel)]="sched.months" (change)="recalcFreq()">
-                            <option *ngFor="let param of schedOpts.months" [value]="param">{{ param }}</option>
-                        </select>
-                    </p>
-                    <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly'">Week<span *ngIf="sched.weeks != 1">s</span>:
-                        <select name="weeks" [(ngModel)]="sched.weeks" (change)="recalcFreq()">
-                            <option *ngFor="let param of schedOpts.weeks" [value]="param">{{ param }}</option>
-                        </select>
-                    </p>
-                    <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly' || sched.howOften == 'daily'">Day<span *ngIf="days != 1">s</span>:
-                        <select name="days" [(ngModel)]="sched.days" (change)="recalcFreq()">
-                            <option *ngFor="let param of schedOpts.days" [value]="param">{{ param }}</option>
-                        </select>
-                    </p>
-                    <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly' || sched.howOften =='daily' || sched.howOften =='hourly'">Hour<span *ngIf="hours != 1">s</span>:
-                        <select name="hours" [(ngModel)]="sched.hours" (change)="recalcFreq()">
-                            <option *ngFor="let param of schedOpts.hours" [value]="param">{{ param }}</option>
-                        </select>
-                    </p>
-                    <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly' || sched.howOften =='daily' || sched.howOften =='hourly' || sched.howOften =='minutes'">Minute<span *ngIf="minutes != 1">s</span>:
-                        <select name="minutes" [(ngModel)]="sched.minutes" (change)="recalcFreq()">
-                            <option *ngFor="let param of schedOpts.minutes" [value]="param">{{ param }}</option>
-                        </select>
-                    </p>
-                    <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly' || sched.howOften =='daily' || sched.howOften =='hourly' || sched.howOften =='minutes' || sched.howOften =='seconds'">Second<span *ngIf="seconds != 1">s</span>:
-                        <select name="seconds" [(ngModel)]="sched.seconds" (change)="recalcFreq()">
-                            <option *ngFor="let param of schedOpts.seconds" [value]="param">{{ param }}</option>
-                        </select>
-                    </p>
-                </fieldset>
-                <p>Keep Watering For: </p>
-                <fieldset>
-                    <p>Minute<span *ngIf="openMinutes != 1">s</span>:
-                        <select name="openMinutes" [(ngModel)]="openSched.minutes" (change)="recalcTimeOpen()">
-                            <!-- <option *ngFor="let param of schedOpts.minutes" [value]="param">{{ param }}</option> -->
-                            <option *ngFor="let param of (schedOpts.minutes ? schedOpts.minutes.slice(0,15): [])" [value]="param">{{ param }}</option>
-                        </select>
-                    </p>
-                    <p>Second<span *ngIf="openSeconds != 1">s</span>:
-                        <select name="openseconds" [(ngModel)]="openSched.seconds" (change)="recalcTimeOpen()">
-                            <option *ngFor="let param of schedOpts.seconds" [value]="param">{{ param }}</option>
-                        </select>
-                    </p>
-                </fieldset>
-
-                <p>Open Angle: <input type="range" min="0" max="79" [(ngModel)]="device.servoOpen" value="{{ device.servoOpen }}" class="slider" id="openAngle" name="servoOpen"></p>
-                <p>Closed Angle: <input type="range" min="80" max="180" value="{{ device.servoClose }}" class="slider" id="closedAngle"></p>
             </fieldset>
-            <button type="submit"  [disabled]="!wateringScheduleForm.form.valid">Save Settings"</button>
+            <fieldset>
+                <legend>Water Every: </legend>
+                <p *ngIf="sched.howOften == 'monthly'">Month<span *ngIf="months != 1">s</span>:
+                    <select name="months" [(ngModel)]="sched.months" (change)="recalcFreq()">
+                        <option *ngFor="let param of schedOpts.months" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+                <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly'">Week<span *ngIf="sched.weeks != 1">s</span>:
+                    <select name="weeks" [(ngModel)]="sched.weeks" (change)="recalcFreq()">
+                        <option *ngFor="let param of schedOpts.weeks" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+                <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly' || sched.howOften == 'daily'">Day<span *ngIf="days != 1">s</span>:
+                    <select name="days" [(ngModel)]="sched.days" (change)="recalcFreq()">
+                        <option *ngFor="let param of schedOpts.days" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+                <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly' || sched.howOften =='daily' || sched.howOften =='hourly'">Hour<span *ngIf="hours != 1">s</span>:
+                    <select name="hours" [(ngModel)]="sched.hours" (change)="recalcFreq()">
+                        <option *ngFor="let param of schedOpts.hours" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+                <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly' || sched.howOften =='daily' || sched.howOften =='hourly' || sched.howOften =='minutes'">Minute<span *ngIf="minutes != 1">s</span>:
+                    <select name="minutes" [(ngModel)]="sched.minutes" (change)="recalcFreq()">
+                        <option *ngFor="let param of schedOpts.minutes" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+                <p *ngIf="sched.howOften == 'monthly' || sched.howOften == 'weekly' || sched.howOften =='daily' || sched.howOften =='hourly' || sched.howOften =='minutes' || sched.howOften =='seconds'">Second<span *ngIf="seconds != 1">s</span>:
+                    <select name="seconds" [(ngModel)]="sched.seconds" (change)="recalcFreq()">
+                        <option *ngFor="let param of schedOpts.seconds" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend>Keep Watering For: </legend>
+                <p>Minute<span *ngIf="openMinutes != 1">s</span>:
+                    <select name="openMinutes" [(ngModel)]="openSched.minutes" (change)="recalcTimeOpen()">
+                        <option *ngFor="let param of (schedOpts.minutes ? schedOpts.minutes.slice(0,15): [])" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+                <p>Second<span *ngIf="openSeconds != 1">s</span>:
+                    <select name="openseconds" [(ngModel)]="openSched.seconds" (change)="recalcTimeOpen()">
+                        <option *ngFor="let param of schedOpts.seconds" [value]="param">{{ param }}</option>
+                    </select>
+                </p>
+            </fieldset>
+
+            <p><strong>Open Angle:</strong>
+                <span *ngIf="device.servoOpen == 0">100% Full Speed</span>
+                <span *ngIf="device.servoOpen > 0 && device.servoOpen <=25">{{100 - device.servoOpen}}% Faster</span>
+                <span *ngIf="device.servoOpen > 25 && device.servoOpen <=50">{{100 - device.servoOpen}}% Fast</span>
+                <span *ngIf="device.servoOpen > 50 && device.servoOpen <=75">{{100 - device.servoOpen}}% Slow</span>
+                <span *ngIf="device.servoOpen > 75 && device.servoOpen < 99">{{100 - device.servoOpen}}% Slower</span>
+                <span *ngIf="device.servoOpen == 99">0% Off</span>
+            </p>
+            <p class="test"><input type="range" min="0" max="99" [(ngModel)]="device.servoOpen" value="{{ device.servoOpen }}" class="slider" id="openAngle" name="servoOpen"></p>
+            <button type="submit" (click)="resetForm()" class="button button-outline">Reset</button>
+            <button type="submit" [disabled]="!wateringScheduleForm.form.valid" class="float-right">Update</button>
         </form>
     </div>
     <div *ngIf="dataMismatch">
@@ -111,7 +111,12 @@
         <i class="fa fa-spinner fa-spin fa-5x"></i>
     </div>
 
-
-
-    <button (click)="goBack()">go back</button>
+    <div *ngIf="cannotConnect" class="cannot-connect">
+        <p>Hmm. It looks like I'm unable to connect. Please ensure your bluetooth is enabled and your device is nearby.</p>
+        <button class="retry" (click)="retry()">Retry</button>
+        <button (click)="goBack()" class="button nevermind button-outline"><i class="fa fa-chevron-left"></i> Nevermind</button>
+        <p>&nbsp;</p>
+        <p>You can also make edits now, and the changes will be synced to the device the next time you connect.</p>
+        <button (click)="proceed()" class="button proceed button-outline">Edit Now & Sync Later &nbsp; &nbsp;<i class="fa fa-refresh"></i> </button>
+    </div>
 </div>

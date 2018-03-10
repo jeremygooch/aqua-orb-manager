@@ -29,6 +29,12 @@
     <allow-navigation href="*" />
     <preference name="fullscreen" value="true" />
     <icon src="www/assets/plant-icon.svg" />
+    <platform name="android">
+        <icon density="ldpi" src="www/assets/app-icon/drawable-ldpi/launcher-icon.png" />
+        <icon density="mdpi" src="www/assets/app-icon/drawable-mdpi/launcher-icon.png" />
+        <icon density="hdpi" src="www/assets/app-icon/drawable-hdpi/launcher-icon.png" />
+        <icon density="xhdpi" src="www/assets/app-icon/drawable-xhdpi/launcher-icon.png" />
+    </platform>
     <engine name="browser" spec="^5.0.3" />
     <engine name="android" spec="^7.0.0" />
 </widget>
