@@ -14,7 +14,6 @@
             <img *ngIf="device.imgPath==''" src="assets/plant-default.svg" class="placeholder" (click)="openCamera()">
             <a (click)="openCamera()"><i class="fa fa-camera fa-2x"></i></a>
         </div>
-
         <form #wateringScheduleForm="ngForm" (ngSubmit)="onSubmit()">
             <input [(ngModel)]="device.name" name="deviceName" placeholder="name" type="text" required />
             <fieldset>

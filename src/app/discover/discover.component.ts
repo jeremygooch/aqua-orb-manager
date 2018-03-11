@@ -89,7 +89,8 @@ export class DiscoverComponent implements OnInit {
     }
 
     goBack(): void {
-        this.location.back();
+        this.router.navigate(['/devices']);
+        // this.location.back();
     }
 
     goToDevices(): void {

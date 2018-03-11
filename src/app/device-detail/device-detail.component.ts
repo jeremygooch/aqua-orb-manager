@@ -1,4 +1,4 @@
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 
@@ -11,7 +11,8 @@ import { CloseSchedule } from './close-schedule';
 declare var navigator: any;
 declare var cordova: any;
 declare var window: any;
-declare var imagePicker: any;
+// declare var FilePath: any;
+// declare var imagePicker: any;
 
 
 @Component({
@@ -52,6 +53,7 @@ export class DeviceDetailComponent implements OnInit {
     constructor(
         private zone: NgZone,
         private route: ActivatedRoute,
+        private router: Router,
         private discoverService: DiscoverService,
         private deviceService: DeviceService,
         private location: Location
@@ -238,7 +240,8 @@ export class DeviceDetailComponent implements OnInit {
     }
 
     goBack(): void {
-        this.location.back();
+        this.router.navigate(['/devices']);
+        // this.location.back();
     }
 
     updateImage(path): void {
@@ -261,7 +264,24 @@ export class DeviceDetailComponent implements OnInit {
     }
 
     choosePic(): void {
+        console.log('camera');
+        console.dir(navigator.camera);
+        console.log('window');
         console.dir(window);
+        console.log('FilePath');
+        // console.dir(FilePath);
+        
+        navigator.camera.getPicture(path => {
+            console.log(path);
+            this.zone.run(() => {
+                this.device.imgPath = path;
+            });
+        }, () => {
+            alert('failure!');
+        }, {
+            destinationType: navigator.camera.DestinationType.NATIVE_URI,
+            sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+        });
     }
 
     setCameraOptions(srcType): {} {

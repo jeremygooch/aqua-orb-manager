@@ -4,7 +4,8 @@ import { Location } from '@angular/common';
 declare var bluetoothSerial;
 declare var navigator;
 declare var cordova;
-declare var imagePicker;
+// declare var FilePath;
+// declare var imagePicker;
 
 @Component({
     selector: 'app-root',
@@ -24,7 +25,8 @@ export class AppComponent implements OnInit {
             this.bluetoothSerial = bluetoothSerial;
             this.navigator = navigator;
             this.cordova = cordova;
-            this.imagePicker = imagePicker;
+            // this.FilePath = FilePath;
+            // this.imagePicker = imagePicker;
         }
     }
     // goBack(): void {
