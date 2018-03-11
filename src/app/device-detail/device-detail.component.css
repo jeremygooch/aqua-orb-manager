@@ -3,7 +3,7 @@
     clear: both;
     width: 100%;
     text-align: center;
-    height: 165px;
+    height: 230px;
 
     background-size: cover;
     background-repeat: no-repeat;
@@ -43,7 +43,7 @@
     position: absolute;
     left: 2rem;
     color: rgba(0,0,0,0.25);
-    margin-top: calc(165px - 4rem);
+    margin-top: calc(230px - 4rem);
 
 }
 

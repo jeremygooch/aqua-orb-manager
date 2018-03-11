@@ -11,6 +11,7 @@ import { CloseSchedule } from './close-schedule';
 declare var navigator: any;
 declare var cordova: any;
 declare var window: any;
+declare var imagePicker: any;
 
 
 @Component({
@@ -213,15 +214,9 @@ export class DeviceDetailComponent implements OnInit {
 
             aquaMessage = `[f:${fPrefix}${this.device.frequency}|t:${tPrefix}${this.device.timeOpen}|o:${oPrefix}${this.device.servoOpen}|c:${cPrefix}${this.device.servoClose}|n:${this.device.name}]`;
 
-            // console.log(aquaMessage);
             this.deviceService.updateDevice(this.device);
 
-            this.discoverService.write(aquaMessage, this.device.id).then(data => {
-                // console.log('ok, im in the callback and am going to send this across');
-                // console.dir(this.device);
-                // console.log(this.deviceService);
-                // console.log(this.deviceService.updateDevice);
-            });
+            this.discoverService.write(aquaMessage, this.device.id).then(data => { });
         }
 
     }
@@ -229,6 +224,12 @@ export class DeviceDetailComponent implements OnInit {
     getDeviceDefault(): void {
         const id = this.route.snapshot.paramMap.get('id');
         this.device = this.deviceService.getDevice(id);;
+    }
+
+    deleteDevice(id): void {
+        if (this.deviceService.deleteDevice(id)) {
+            this.location.back();
+        }
     }
 
     retry(): void {
@@ -261,14 +262,6 @@ export class DeviceDetailComponent implements OnInit {
 
     choosePic(): void {
         console.dir(window);
-        // window.resolveLocalFileSystemURI(img.URI, function(entry) {
-        //     alert(entry.fullPath);
-        //     console.log(entry.fullPath);
-        // }, function(evt){
-        //     alert(evt.code);
-        //     console.log(evt.code);
-        // });
-
     }
 
     setCameraOptions(srcType): {} {
@@ -282,7 +275,6 @@ export class DeviceDetailComponent implements OnInit {
             mediaType: navigator.camera.MediaType.PICTURE,
             allowEdit: true,
             correctOrientation: true,  //Corrects Android orientation quirks
-            targetHeight: 600,
             targetWidth: 800
         }
     }

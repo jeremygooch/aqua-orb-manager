@@ -12,17 +12,16 @@
         <h3 *ngIf="noConnection">Could not connect to device</h3>
         <div class="device-image" [class.defaultImage]="device.imgPath == ''" [ngStyle]="{ 'background-image': 'url(' + device.imgPath + ')'}">
             <img *ngIf="device.imgPath==''" src="assets/plant-default.svg" class="placeholder" (click)="openCamera()">
-            <a (click)="choosePic()"><i class="fa fa-folder fa-2x"></i></a>
-             <a (click)="openCamera()"><i class="fa fa-camera fa-2x"></i></a>
+            <a (click)="openCamera()"><i class="fa fa-camera fa-2x"></i></a>
         </div>
 
         <form #wateringScheduleForm="ngForm" (ngSubmit)="onSubmit()">
             <input [(ngModel)]="device.name" name="deviceName" placeholder="name" type="text" required />
             <fieldset>
                 <legend>How often to Water:</legend>
-                    <select (change)="updateSchedule(0)" name="howOften" [(ngModel)]="sched.howOften">
-                        <option *ngFor="let param of schedOpts.howOften" [value]="param">{{ param  | titlecase }}</option>
-                    </select>
+                <select (change)="updateSchedule(0)" name="howOften" [(ngModel)]="sched.howOften">
+                    <option *ngFor="let param of schedOpts.howOften" [value]="param">{{ param  | titlecase }}</option>
+                </select>
             </fieldset>
             <fieldset>
                 <legend>Water Every: </legend>
@@ -80,7 +79,9 @@
                 <span *ngIf="device.servoOpen == 99">0% Off</span>
             </p>
             <p class="test"><input type="range" min="0" max="99" [(ngModel)]="device.servoOpen" value="{{ device.servoOpen }}" class="slider" id="openAngle" name="servoOpen"></p>
-            <button type="submit" (click)="resetForm()" class="button button-outline">Reset</button>
+            <button type="submit" (click)="deleteDevice(device.id)" class="button button-outline">
+                <i class="fa fa-trash"></i> Remove
+            </button>
             <button type="submit" [disabled]="!wateringScheduleForm.form.valid" class="float-right">Update</button>
         </form>
     </div>

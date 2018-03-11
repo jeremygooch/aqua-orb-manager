@@ -52,4 +52,10 @@ export class DeviceService {
         return this.hasDevices() ? !!this.getDevices().find(device => device.id === id) : false;
     }
 
+    deleteDevice(id): boolean {
+        let devices = this.getDevices().filter(device => device.id != id);
+        this.db.setItem('devices', JSON.stringify(devices));
+        return true;
+    }
+
 }
