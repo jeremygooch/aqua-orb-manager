@@ -214,9 +214,13 @@ export class DeviceDetailComponent implements OnInit {
             aquaMessage = `[f:${fPrefix}${this.device.frequency}|t:${tPrefix}${this.device.timeOpen}|o:${oPrefix}${this.device.servoOpen}|c:${cPrefix}${this.device.servoClose}|n:${this.device.name}]`;
 
             // console.log(aquaMessage);
+            this.deviceService.updateDevice(this.device);
 
             this.discoverService.write(aquaMessage, this.device.id).then(data => {
-                this.deviceService.updateDevice(this.device);
+                // console.log('ok, im in the callback and am going to send this across');
+                // console.dir(this.device);
+                // console.log(this.deviceService);
+                // console.log(this.deviceService.updateDevice);
             });
         }
 
@@ -237,7 +241,6 @@ export class DeviceDetailComponent implements OnInit {
     }
 
     updateImage(path): void {
-        this.device.imgPath = path;
         this.zone.run(() => {
             this.device.imgPath = path;
         });
@@ -246,7 +249,7 @@ export class DeviceDetailComponent implements OnInit {
     openCamera(): void {
 
         var srcType = navigator.camera.PictureSourceType.CAMERA;
-        var options = this.setOptions(srcType);
+        var options = this.setCameraOptions(srcType);
 
         navigator.camera.getPicture(imageUri => {
             this.updateImage(imageUri);
@@ -257,10 +260,18 @@ export class DeviceDetailComponent implements OnInit {
     }
 
     choosePic(): void {
-        console.log('TBD...');
+        console.dir(window);
+        // window.resolveLocalFileSystemURI(img.URI, function(entry) {
+        //     alert(entry.fullPath);
+        //     console.log(entry.fullPath);
+        // }, function(evt){
+        //     alert(evt.code);
+        //     console.log(evt.code);
+        // });
+
     }
 
-    setOptions(srcType): {}{
+    setCameraOptions(srcType): {} {
         return {
             // Some common settings are 20, 50, and 100
             quality: 100,
