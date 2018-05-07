@@ -1,12 +1,11 @@
-import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { Component, OnInit, Input, NgZone } from '@angular/core';
-
-import { DeviceService }  from '../device.service';
-
+import { Component, Input, NgZone, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Device } from '../device';
+import { DeviceService } from '../device.service';
 import { DiscoverService } from '../discover.service';
-import { CloseSchedule } from './close-schedule';
+
+
 
 declare var navigator: any;
 declare var cordova: any;
@@ -30,17 +29,17 @@ export class DeviceDetailComponent implements OnInit {
     newFreq: number;
 
     schedOpts = {
-        howOften: [ 'monthly', 'weekly', 'daily', 'hourly', 'minutes', 'seconds' ],
-        months:   [ 0, 1, 2, 3 ],
-        weeks:    [ 0, 1, 2, 3 ],
-        days:     [ 0, 1, 2, 3, 4, 5, 6  ],
-        hours:    Array.apply(null, Array(24)).map(function (x, i) { return i; }),
-        minutes:  Array.apply(null, Array(60)).map(function (x, i) { return i; }),
-        seconds:  Array.apply(null, Array(60)).map(function (x, i) { return i; })
+        howOften: ['monthly', 'weekly', 'daily', 'hourly', 'minutes', 'seconds'],
+        months: [0, 1, 2, 3],
+        weeks: [0, 1, 2, 3],
+        days: [0, 1, 2, 3, 4, 5, 6],
+        hours: Array.apply(null, Array(24)).map(function (x, i) { return i; }),
+        minutes: Array.apply(null, Array(60)).map(function (x, i) { return i; }),
+        seconds: Array.apply(null, Array(60)).map(function (x, i) { return i; })
     };
 
-    sched = {howOften:'hourly', months:0, weeks:0, days:0, hours:0, minutes:0, seconds:0};
-    openSched= {
+    sched = { howOften: 'hourly', months: 0, weeks: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
+    openSched = {
         seconds: 0,
         minutes: 0
     }
@@ -57,7 +56,7 @@ export class DeviceDetailComponent implements OnInit {
         private discoverService: DiscoverService,
         private deviceService: DeviceService,
         private location: Location
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.deviceFetched = false;
@@ -79,16 +78,16 @@ export class DeviceDetailComponent implements OnInit {
         }
     }
 
-    updateSchedule(f:number, init:boolean): void {
-        let oneMonth:number = 2592000,
-        oneWeek:number  = 604800,
-        oneDay:number   = 86400,
-        oneHour:number  = 3600;
+    updateSchedule(f: number, init: boolean): void {
+        let oneMonth: number = 2592000,
+            oneWeek: number = 604800,
+            oneDay: number = 86400,
+            oneHour: number = 3600;
 
-        this.sched.months  = Math.floor(f / oneMonth);
-        this.sched.weeks   = Math.floor((f - (this.sched.months * oneMonth)) / oneWeek);
-        this.sched.days    = Math.floor((f - ((this.sched.months * oneMonth) + (this.sched.weeks * oneWeek))) / oneDay);
-        this.sched.hours   = Math.floor((f - ((this.sched.months * oneMonth) + (this.sched.weeks * oneWeek) + (this.sched.days * oneDay))) / oneHour);
+        this.sched.months = Math.floor(f / oneMonth);
+        this.sched.weeks = Math.floor((f - (this.sched.months * oneMonth)) / oneWeek);
+        this.sched.days = Math.floor((f - ((this.sched.months * oneMonth) + (this.sched.weeks * oneWeek))) / oneDay);
+        this.sched.hours = Math.floor((f - ((this.sched.months * oneMonth) + (this.sched.weeks * oneWeek) + (this.sched.days * oneDay))) / oneHour);
         this.sched.minutes = Math.floor((f - ((this.sched.months * oneMonth) + (this.sched.weeks * oneWeek) + (this.sched.days * oneDay) + (this.sched.hours * oneHour))) / 60);
 
         this.sched.seconds = Math.floor((f - ((this.sched.months * oneMonth) + (this.sched.weeks * oneWeek) + (this.sched.days * oneDay) + (this.sched.hours * oneHour) + (this.sched.minutes * 60))));
@@ -131,15 +130,15 @@ export class DeviceDetailComponent implements OnInit {
     queryDevice(): void {
         //TODO: Show old info on screen (from db) with content grayed out and loading ux...
         this.discoverService.queryDevice(this.device.id).then(data => {
-            data.imgPath = this.device.imgPath || "" ; // Image path not stored on device
+            data.imgPath = this.device.imgPath || ""; // Image path not stored on device
             data.id = this.device.id; // ID/address not stored on device
 
-            if (data.frequency  != this.device.frequency ||
-                data.name       != this.device.name ||
-                data.servoOpen  != this.device.servoOpen ||
+            if (data.frequency != this.device.frequency ||
+                data.name != this.device.name ||
+                data.servoOpen != this.device.servoOpen ||
                 data.servoClose != this.device.servoClose ||
-                data.timeOpen   != this.device.timeOpen
-               ) {
+                data.timeOpen != this.device.timeOpen
+            ) {
                 this.dbDevice = this.device;
                 this.dataMismatch = true;
             }
@@ -168,10 +167,10 @@ export class DeviceDetailComponent implements OnInit {
             alert('please give your plant a name');
         } else {
             let aquaMessage: string,
-            fPrefix: string,
-            tPrefix: string,
-            oPrefix: string,
-            cPrefix: string;
+                fPrefix: string,
+                tPrefix: string,
+                oPrefix: string,
+                cPrefix: string;
 
 
             // Cannot simply prefix the values with the appropriate num of 0's as JS will complain about octals or simply collapse the values.
@@ -270,7 +269,7 @@ export class DeviceDetailComponent implements OnInit {
         console.dir(window);
         console.log('FilePath');
         // console.dir(FilePath);
-        
+
         navigator.camera.getPicture(path => {
             console.log(path);
             this.zone.run(() => {
@@ -279,9 +278,9 @@ export class DeviceDetailComponent implements OnInit {
         }, () => {
             alert('failure!');
         }, {
-            destinationType: navigator.camera.DestinationType.NATIVE_URI,
-            sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
-        });
+                destinationType: navigator.camera.DestinationType.NATIVE_URI,
+                sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+            });
     }
 
     setCameraOptions(srcType): {} {
@@ -299,7 +298,7 @@ export class DeviceDetailComponent implements OnInit {
         }
     }
 
-    save():void {
+    save(): void {
         console.log('save to storage and update bluetooth...');
     }
 }

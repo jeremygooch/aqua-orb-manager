@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-welcome',
-  templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.css']
+    selector: 'app-welcome',
+    templateUrl: './welcome.component.html',
+    styleUrls: ['./welcome.component.css']
 })
 export class WelcomeComponent implements OnInit {
 
@@ -11,11 +11,6 @@ export class WelcomeComponent implements OnInit {
     }
 
     ngOnInit() {
-        document.addEventListener("load", onDeviceReady, false);
-
-        function onDeviceReady() {
-        }
-        console.log('DEBUGGING');
-  }
+    }
 
 }

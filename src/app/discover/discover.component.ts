@@ -1,12 +1,8 @@
-import { Component, OnInit, NgZone } from '@angular/core';
-import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-
-import { Device } from '../device';
+import { Component, NgZone, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DeviceService } from '../device.service';
-import { DevicesComponent } from '../devices/devices.component';
 import { DiscoverService } from '../discover.service';
-import TextEncoding from 'text-encoding';
 
 declare var bluetoothSerial: any;
 
@@ -17,9 +13,8 @@ declare var bluetoothSerial: any;
 })
 export class DiscoverComponent implements OnInit {
     foundDevices;
-    // noDevices;
     connectingDevice;
-    noConnection:boolean = false;
+    noConnection: boolean = false;
     savedDev;
 
     debugging;
@@ -27,6 +22,7 @@ export class DiscoverComponent implements OnInit {
 
     constructor(
         private zone: NgZone,
+        private route: ActivatedRoute,
         private discoverService: DiscoverService,
         private deviceService: DeviceService,
         private location: Location,
@@ -34,10 +30,14 @@ export class DiscoverComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        let initial = this.route.snapshot.paramMap.get('initial');
+        if (initial === "true") {
+            console.log('TODO Welcome Msg: "First, find your plant from the list of Bluetooth devices on your phone. Also, maybe a help link about not finding your device."');
+        }
         this.establishConn();
     }
 
-    establishConn():void {
+    establishConn(): void {
         if (!this.discoverService.setupNew()) {
             this.noConnection = true;
         } else {
@@ -52,18 +52,18 @@ export class DiscoverComponent implements OnInit {
         }
     }
 
-    mockDevices():void {
-         this.foundDevices = [
-            {name: "HC-05",               address: "01:01", id: "02:02", class: 7936},
-            {name: "TOYOTA Corolla",      address: "03:03", id: "03:03", class: 1032},
-            {name: "myplant01",           address: "04:04", id: "04:04", class: 7936},
-            {name: "Daydream controller", address: "05:05", id: "05:05", class: 7936},
-            {name: "HMDX Neutron",        address: "06:06", id: "07:07", class: 1028},
-            {name: "abiding-aardvark",    address: "08:08", id: "09:09", class: 7936}
+    mockDevices(): void {
+        this.foundDevices = [
+            { name: "HC-05", address: "01:01", id: "02:02", class: 7936 },
+            { name: "TOYOTA Corolla", address: "03:03", id: "03:03", class: 1032 },
+            { name: "myplant01", address: "04:04", id: "04:04", class: 7936 },
+            { name: "Daydream controller", address: "05:05", id: "05:05", class: 7936 },
+            { name: "HMDX Neutron", address: "06:06", id: "07:07", class: 1028 },
+            { name: "abiding-aardvark", address: "08:08", id: "09:09", class: 7936 }
         ];
     }
 
-    listDevices():void {
+    listDevices(): void {
         this.discoverService.list().then(btd => {
             this.foundDevices = btd.filter(bt => !this.deviceService.hasDevice(bt.address));
         });
@@ -72,7 +72,7 @@ export class DiscoverComponent implements OnInit {
     connectTo(addr: string): void {
         this.connectingDevice = addr;
         this.discoverService.queryDevice(addr).then(data => {
-            data.imgPath = "" ;
+            data.imgPath = "";
             data.id = addr;
             this.deviceService.addDevice(data);
             this.goToDevices();
@@ -83,14 +83,12 @@ export class DiscoverComponent implements OnInit {
 
     connectToMock(addr: string): void {
         window.setTimeout(() => {
-            // this.deviceService.saveDevice(this.foundDevices.find(device => device.address === addr));
             this.goToDevices();
         }, 1000);
     }
 
     goBack(): void {
         this.router.navigate(['/devices']);
-        // this.location.back();
     }
 
     goToDevices(): void {

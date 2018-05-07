@@ -4,7 +4,6 @@ import { of } from 'rxjs/observable/of';
 
 import { Device } from './device';
 
-
 declare var bluetoothSerial: any;
 
 @Injectable()
@@ -31,11 +30,11 @@ export class DiscoverService {
             if (typeof window !== 'undefined') {
                 this.debugging = true;
                 return true;
-            } else { return false}
+            } else { return false }
         } else { return true }
     }
 
-    isAvailable(): Promise<boolean>{
+    isAvailable(): Promise<boolean> {
         if (!this.debugging) {
             return new Promise(resolve => {
                 bluetoothSerial.isEnabled(() => {
@@ -81,12 +80,12 @@ export class DiscoverService {
             return new Promise(resolve => {
                 window.setTimeout(() => {
                     resolve([
-                        {name: "HC-05",               address: "01:01", id: "02:02", class: 7936},
-                        {name: "TOYOTA Corolla",      address: "03:03", id: "03:03", class: 1032},
-                        {name: "myplant01",           address: "04:04", id: "04:04", class: 7936},
-                        {name: "Daydream controller", address: "05:05", id: "05:05", class: 7936},
-                        {name: "HMDX Neutron",        address: "06:06", id: "07:07", class: 1028},
-                        {name: "abiding-aardvark",    address: "08:08", id: "09:09", class: 7936}
+                        { name: "HC-05", address: "01:01", id: "02:02", class: 7936 },
+                        { name: "TOYOTA Corolla", address: "03:03", id: "03:03", class: 1032 },
+                        { name: "myplant01", address: "04:04", id: "04:04", class: 7936 },
+                        { name: "Daydream controller", address: "05:05", id: "05:05", class: 7936 },
+                        { name: "HMDX Neutron", address: "06:06", id: "07:07", class: 1028 },
+                        { name: "abiding-aardvark", address: "08:08", id: "09:09", class: 7936 }
                     ]);
                 }, 1000);
             })

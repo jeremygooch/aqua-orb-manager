@@ -22,7 +22,6 @@ export class DevicesComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        console.log('im initting...');
         if (this.deviceService.hasDevices()) {
             this.getDevices();
         } else {
@@ -32,9 +31,7 @@ export class DevicesComponent implements OnInit {
 
     getDevices(): void {
         this.devices = this.deviceService.getDevices();
-        console.log(this.devices);
-        if (this.devices.length > 0) {} else {
-            // alert('no devices. redirect to discover screen....');
+        if (this.devices.length <= 0) {
             this.zone.run(() => {
                 this.router.navigate(['/welcome']);
             });
