@@ -3,10 +3,15 @@
         <div class="back-link" (click)="goBack()">
             <i class="fa fa-chevron-left"></i>
         </div>
-        <!-- <button>Back</button> -->
         <h2>Connect To A Device</h2>
     </section>
 </nav>
+
+<div *ngIf="welcomeMsg" class="Welcome message">
+    <p>
+        First, find your plant from the list of Bluetooth devices I found.
+    </p>
+</div>
 
 <ul class="found-devices">
     <li *ngFor="let foundDevice of foundDevices" class="fadeIn">
@@ -25,3 +30,4 @@
 <div *ngIf="!foundDevices" class="loading">
     <i class="fa fa-spinner fa-spin fa-5x"></i>
 </div>
+

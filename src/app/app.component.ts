@@ -10,12 +10,12 @@ declare var cordova;
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css']
+    styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
     constructor(
         private location: Location
-    ) {}
+    ) { }
     title = 'Aqua Orb Manager';
 
     ngOnInit() {

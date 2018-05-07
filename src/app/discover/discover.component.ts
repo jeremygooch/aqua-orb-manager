@@ -9,12 +9,14 @@ declare var bluetoothSerial: any;
 @Component({
     selector: 'app-discover',
     templateUrl: './discover.component.html',
-    styleUrls: ['./discover.component.css']
+    styleUrls: ['./discover.component.scss']
 })
 export class DiscoverComponent implements OnInit {
     foundDevices;
     connectingDevice;
     noConnection: boolean = false;
+    welcomeMsg: boolean = false;
+    initial: boolean = false;
     savedDev;
 
     debugging;
@@ -30,10 +32,7 @@ export class DiscoverComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        let initial = this.route.snapshot.paramMap.get('initial');
-        if (initial === "true") {
-            console.log('TODO Welcome Msg: "First, find your plant from the list of Bluetooth devices on your phone. Also, maybe a help link about not finding your device."');
-        }
+        this.initial = this.route.snapshot.paramMap.get('initial') === "true" ? true : false;
         this.establishConn();
     }
 
@@ -66,6 +65,9 @@ export class DiscoverComponent implements OnInit {
     listDevices(): void {
         this.discoverService.list().then(btd => {
             this.foundDevices = btd.filter(bt => !this.deviceService.hasDevice(bt.address));
+            if (this.initial) {
+                this.welcomeMsg = true;
+            }
         });
     }
 
